@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MACFun United — Anfrageformular Vorstandsstabsstelle</title>
+<meta name="description" content="Internes Anfrageformular der Vorstandsstabsstelle von MACFun United für Kooperations-, Sponsoring- und Spendenanfragen.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B3D2B'/%3E%3Crect x='4' y='19' width='24' height='7' fill='%23ffffff'/%3E%3Ctext x='16' y='25' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='8' fill='%230B3D2B'%3EMU%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- Tokens (aus MACFun United Brand Guidelines) ---------- */
+  :root{
+    --bg:#FFFFFF;
+    --surface:#F2F5F2;
+    --text:#14181A;
+    --text-muted:#5C665F;
+    --line:rgba(20,24,26,0.12);
+
+    /* Markenfarben: fest, aendern sich nicht mit dem Theme */
+    --brand-900:#0B3D2B;
+    --brand-700:#15573B;
+    --brand-500:#2E7A54;
+    --brand-ink:#F4F1E8;
+
+    --danger:#8C2F2F;
+    --danger-surface:#F7EDEA;
+
+    --font-display:'Big Shoulders Display', 'Arial Narrow', sans-serif;
+    --font-body:'Source Serif 4', Georgia, serif;
+    --font-mono:'Space Mono', ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#14181A;
+      --surface:#1C2320;
+      --text:#F1F3F0;
+      --text-muted:#9AA69E;
+      --line:rgba(241,243,240,0.14);
+      --danger:#E39A9A;
+      --danger-surface:#2A1B1B;
+    }
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  [hidden]{ display:none !important; }
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+  html,body{ margin:0; }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,p{ margin:0; }
+  .wrap{ max-width:720px; margin-inline:auto; padding-inline:clamp(1.25rem,4vw,2.5rem); }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:.72rem;
+  }
+
+  /* ---------- Kopfbereich ---------- */
+  header.masthead{
+    background:var(--brand-900);
+    color:var(--brand-ink);
+    padding-block:clamp(2rem,6vw,2.75rem);
+  }
+  .masthead__inner{ display:flex; align-items:center; gap:1.25rem; }
+  .crest{ width:56px; height:56px; flex:none; }
+  .masthead__text .eyebrow{ color:rgba(244,241,232,.72); }
+  .masthead__text h1{
+    font-family:var(--font-display);
+    font-weight:900;
+    text-transform:uppercase;
+    font-size:clamp(1.6rem,4.5vw,2.3rem);
+    letter-spacing:.01em;
+    line-height:1;
+    margin-top:.3rem;
+  }
+  .masthead__text .subline{
+    font-size:.95rem;
+    color:rgba(244,241,232,.85);
+    margin-top:.5rem;
+    max-width:56ch;
+  }
+
+  main{ padding-block:clamp(2.25rem,6vw,3.25rem); }
+
+  .intro{ margin-bottom:2rem; }
+  .intro h2{
+    font-family:var(--font-display);
+    font-weight:800;
+    text-transform:uppercase;
+    font-size:clamp(1.3rem,3.4vw,1.7rem);
+    letter-spacing:.005em;
+  }
+  .intro p{ color:var(--text-muted); margin-top:.6rem; max-width:60ch; }
+
+  /* ---------- Panels ---------- */
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:clamp(1.5rem,4vw,2.25rem);
+  }
+  .panel + .panel{ margin-top:1.5rem; }
+
+  /* ---------- Formular ---------- */
+  .field{ margin-top:1.4rem; }
+  .field:first-child{ margin-top:0; }
+  .field label{
+    display:block;
+    font-family:var(--font-mono);
+    font-size:.78rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--text);
+    margin-bottom:.45rem;
+  }
+  .field label .req{ color:var(--brand-500); margin-left:.2em; }
+  .field .hint{
+    font-size:.82rem;
+    color:var(--text-muted);
+    margin-top:.4rem;
+  }
+  input[type="text"],
+  input[type="url"],
+  input[type="email"],
+  select{
+    width:100%;
+    font-family:var(--font-body);
+    font-size:1rem;
+    color:var(--text);
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:.75rem .85rem;
+    line-height:1.4;
+  }
+  input:focus,
+  select:focus{
+    outline:none;
+    border-color:var(--brand-500);
+    box-shadow:0 0 0 3px rgba(46,122,84,.18);
+  }
+  input:invalid:not(:placeholder-shown){
+    border-color:var(--danger);
+  }
+  select{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%235C665F'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%235C665F' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .85rem center; padding-right:2.25rem; }
+
+  .actions{ margin-top:2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+
+  .btn{
+    font-family:var(--font-mono);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    font-size:.82rem;
+    border-radius:3px;
+    padding:.9rem 1.85rem;
+    border:1px solid transparent;
+    cursor:pointer;
+  }
+  .btn-primary{ background:var(--brand-900); color:var(--brand-ink); }
+  .btn-primary:hover{ background:var(--brand-700); }
+  .btn-secondary{ background:transparent; color:var(--brand-900); border-color:var(--brand-900); }
+  .btn-secondary:hover{ background:var(--brand-900); color:var(--brand-ink); }
+  @media (prefers-color-scheme: dark){
+    .btn-secondary{ color:var(--brand-ink); border-color:var(--brand-ink); }
+    .btn-secondary:hover{ background:var(--brand-ink); color:var(--brand-900); }
+  }
+
+  /* ---------- Fehlerbanner ---------- */
+  .error-banner{
+    background:var(--danger-surface);
+    border:1px solid var(--danger);
+    border-radius:3px;
+    padding:1.1rem 1.3rem;
+    margin-bottom:1.5rem;
+  }
+  .error-banner .error-title{
+    font-family:var(--font-mono);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-size:.82rem;
+    color:var(--danger);
+  }
+  .error-banner .error-detail{ margin-top:.5rem; font-size:.92rem; color:var(--text); }
+  .error-banner .error-note{ margin-top:.5rem; font-size:.85rem; color:var(--text-muted); }
+
+  /* ---------- Status / Ergebnis ---------- */
+  .status-eyebrow{ color:var(--brand-500); }
+  .status-panel h2{
+    font-family:var(--font-display);
+    font-weight:800;
+    text-transform:uppercase;
+    font-size:clamp(1.3rem,3.4vw,1.7rem);
+    margin-top:.4rem;
+  }
+  .status-panel .lede{ color:var(--text-muted); margin-top:.75rem; max-width:60ch; }
+  .status-panel .lede strong{ color:var(--text); font-weight:600; }
+
+  .processing{
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    margin-top:1.75rem;
+    padding-top:1.5rem;
+    border-top:1px solid var(--line);
+    font-family:var(--font-mono);
+    font-size:.85rem;
+    color:var(--text-muted);
+  }
+  .spinner{
+    width:18px; height:18px; flex:none;
+    border:2.5px solid var(--line);
+    border-top-color:var(--brand-500);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  #result-block{
+    margin-top:1.75rem;
+    padding-top:1.5rem;
+    border-top:1px solid var(--line);
+  }
+  #result-summary{
+    font-size:1.02rem;
+  }
+  .result-field{ margin-top:1.25rem; }
+  .result-field:first-child{ margin-top:0; }
+  .result-field__label{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--text-muted);
+    margin-bottom:.45rem;
+  }
+  .result-field__value{ font-size:1rem; white-space:pre-wrap; }
+  .result-recommendation{
+    display:inline-block;
+    font-family:var(--font-display);
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    font-size:1.15rem;
+    color:var(--brand-900);
+    background:rgba(46,122,84,.14);
+    border:1px solid var(--brand-500);
+    border-radius:3px;
+    padding:.35rem .9rem;
+  }
+  @media (prefers-color-scheme: dark){
+    .result-recommendation{ color:var(--brand-ink); background:rgba(46,122,84,.24); }
+  }
+  .score-list{ display:flex; flex-direction:column; gap:.45rem; }
+  .score-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:.5rem .8rem;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:3px;
+    font-size:.9rem;
+  }
+  .score-name{ color:var(--text-muted); }
+  .score-value{ font-family:var(--font-mono); font-weight:700; color:var(--text); }
+  details{ margin-top:1.25rem; }
+  summary{
+    cursor:pointer;
+    font-family:var(--font-mono);
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--text-muted);
+  }
+  .mono-block{
+    font-family:var(--font-mono);
+    font-size:.82rem;
+    color:var(--text);
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:1rem;
+    margin-top:.75rem;
+    overflow-x:auto;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+
+  footer{
+    padding-block:2rem;
+    border-top:1px solid var(--line);
+    font-size:.78rem;
+    color:var(--text-muted);
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="wrap masthead__inner">
+      <svg class="crest" viewBox="0 0 200 200" role="img" aria-label="MACFun United Wappen">
+        <path d="M30,58 L100,38 L170,58 L170,128 C170,168 132,188 100,196 C68,188 30,168 30,128 Z" fill="#F4F1E8"/>
+        <circle cx="100" cy="82" r="15" fill="none" stroke="#0B3D2B" stroke-width="2.5"/>
+        <path d="M100,70 L108,77 L105,87 L95,87 L92,77 Z" fill="#0B3D2B"/>
+        <rect x="30" y="112" width="140" height="34" fill="#0B3D2B"/>
+        <text x="100" y="137" text-anchor="middle" font-family="'Big Shoulders Display', sans-serif" font-weight="900" font-size="30" fill="#F4F1E8">MU</text>
+        <path d="M22,192 L100,206 L178,192 L162,196 L100,186 L38,196 Z" fill="#15573B"/>
+      </svg>
+      <div class="masthead__text">
+        <p class="eyebrow">Vorstandsstabsstelle</p>
+        <h1>MACFun United</h1>
+        <p class="subline">Internes Anfrageformular für Kooperations-, Sponsoring- und Spendenanfragen.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <div class="intro">
+      <h2>Anfrage einreichen</h2>
+      <p>Bitte füllen Sie alle Felder vollständig aus. Die Vorstandsstabsstelle prüft jede Anfrage und sendet eine erste Einschätzung an die angegebene(n) Empfänger-E-Mail-Adresse(n).</p>
+    </div>
+
+    <div id="error-banner" class="error-banner" role="alert" hidden>
+      <p class="error-title">Die Anfrage konnte nicht übermittelt werden</p>
+      <p id="error-detail" class="error-detail"></p>
+      <p class="error-note">Ihre Eingaben wurden nicht verworfen. Bitte prüfen Sie die Verbindung und senden Sie das Formular erneut.</p>
+    </div>
+
+    <section id="form-panel" class="panel">
+      <form id="request-form" novalidate>
+
+        <div class="field">
+          <label for="unternehmen">Unternehmen<span class="req">*</span></label>
+          <input type="text" id="unternehmen" name="unternehmen" required autocomplete="organization">
+        </div>
+
+        <div class="field">
+          <label for="website">Website<span class="req">*</span></label>
+          <input type="url" id="website" name="website" required placeholder="https://www.beispiel-unternehmen.de">
+        </div>
+
+        <div class="field">
+          <label for="ansprechpartner">Ansprechpartner<span class="req">*</span></label>
+          <input type="text" id="ansprechpartner" name="ansprechpartner" required autocomplete="name" placeholder="Vor- und Nachname">
+        </div>
+
+        <div class="field">
+          <label for="kategorie">Kategorie<span class="req">*</span></label>
+          <select id="kategorie" name="kategorie" required>
+            <option value="" disabled selected>Bitte wählen</option>
+            <option value="Kooperation">Kooperation</option>
+            <option value="Sponsoring">Sponsoring</option>
+            <option value="Spende">Spende</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="empfaenger_email">Empfänger-E-Mail<span class="req">*</span></label>
+          <input type="email" id="empfaenger_email" name="empfaenger_email" multiple required autocomplete="email" placeholder="name@unternehmen.de, weitere@unternehmen.de">
+          <p class="hint">An diese Adresse(n) wird die spätere Einschätzung der Vorstandsstabsstelle gesendet. Mehrere Adressen bitte durch Komma trennen.</p>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Anfrage senden</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="status-panel" class="panel status-panel" aria-live="polite" hidden>
+      <p class="eyebrow status-eyebrow">Anfrage übermittelt</p>
+      <h2>Ihre Anfrage wird bearbeitet</h2>
+      <p class="lede">Die fachliche Einschätzung der Vorstandsstabsstelle geht per E-Mail an <strong id="confirm-email"></strong>. Die Anfrage wird zusätzlich in einer Datenbank gespeichert.</p>
+
+      <div id="processing" class="processing">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Anfrage wird gerade bearbeitet …</span>
+      </div>
+
+      <div id="result-block" hidden>
+        <p class="eyebrow status-eyebrow">Rückmeldung des Workflows</p>
+        <div id="result-summary"></div>
+        <details>
+          <summary>Technische Antwort anzeigen</summary>
+          <pre id="result-raw" class="mono-block"></pre>
+        </details>
+        <div class="actions">
+          <button type="button" id="new-request-btn" class="btn btn-secondary">Neue Anfrage stellen</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="wrap">Internes Werkzeug der MACFun United Vorstandsstabsstelle · Nicht für externe Verteilung</div>
+  </footer>
+
+<script>
+(function(){
+  var WEBHOOK_URL = 'https://eintrachtfrankfurt.app.n8n.cloud/webhook/macfun-anfrage';
+
+  var form = document.getElementById('request-form');
+  var formPanel = document.getElementById('form-panel');
+  var statusPanel = document.getElementById('status-panel');
+  var errorBanner = document.getElementById('error-banner');
+  var errorDetail = document.getElementById('error-detail');
+  var processing = document.getElementById('processing');
+  var resultBlock = document.getElementById('result-block');
+  var resultSummary = document.getElementById('result-summary');
+  var resultRaw = document.getElementById('result-raw');
+  var confirmEmail = document.getElementById('confirm-email');
+  var newRequestBtn = document.getElementById('new-request-btn');
+
+  var SCORE_LABELS = {
+    seriositaet: 'Seriosität',
+    passung: 'Passung',
+    groesse_potenzial: 'Größe / Potenzial',
+    dringlichkeit: 'Dringlichkeit'
+  };
+
+  function formatScoreLabel(key){
+    if(SCORE_LABELS[key]) return SCORE_LABELS[key];
+    var spaced = key.replace(/_/g, ' ');
+    return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+  }
+
+  function extractSummaryText(parsed){
+    var candidateKeys = ['einschaetzung','empfehlung','ergebnis','result','message','text','summary','antwort','output'];
+    for(var i = 0; i < candidateKeys.length; i++){
+      var v = parsed[candidateKeys[i]];
+      if(typeof v === 'string' && v.trim()) return v;
+    }
+    return null;
+  }
+
+  function addResultField(label, valueEl){
+    var wrap = document.createElement('div');
+    wrap.className = 'result-field';
+    var labelEl = document.createElement('div');
+    labelEl.className = 'result-field__label';
+    labelEl.textContent = label;
+    wrap.appendChild(labelEl);
+    wrap.appendChild(valueEl);
+    resultSummary.appendChild(wrap);
+  }
+
+  function renderStructuredResult(parsed){
+    resultSummary.innerHTML = '';
+
+    var empfehlung = parsed.empfehlung || parsed.result || parsed.einschaetzung;
+    var begruendung = parsed.begruendung || parsed['begründung'] || parsed.reasoning;
+    var scores = parsed.scores;
+    var foundAny = false;
+
+    if(typeof empfehlung === 'string' && empfehlung.trim()){
+      foundAny = true;
+      var recEl = document.createElement('div');
+      recEl.className = 'result-field__value result-recommendation';
+      recEl.textContent = empfehlung;
+      addResultField('Empfehlung', recEl);
+    }
+
+    if(scores && typeof scores === 'object' && !Array.isArray(scores) && Object.keys(scores).length){
+      foundAny = true;
+      var listEl = document.createElement('div');
+      listEl.className = 'result-field__value score-list';
+      Object.keys(scores).forEach(function(key){
+        var row = document.createElement('div');
+        row.className = 'score-row';
+        var nameEl = document.createElement('span');
+        nameEl.className = 'score-name';
+        nameEl.textContent = formatScoreLabel(key);
+        var valEl = document.createElement('span');
+        valEl.className = 'score-value';
+        valEl.textContent = scores[key];
+        row.appendChild(nameEl);
+        row.appendChild(valEl);
+        listEl.appendChild(row);
+      });
+      addResultField('Scores', listEl);
+    }
+
+    if(typeof begruendung === 'string' && begruendung.trim()){
+      foundAny = true;
+      var begEl = document.createElement('p');
+      begEl.className = 'result-field__value';
+      begEl.textContent = begruendung;
+      addResultField('Begründung', begEl);
+    }
+
+    if(!foundAny){
+      var fallback = extractSummaryText(parsed);
+      var p = document.createElement('p');
+      p.textContent = fallback || 'Der Workflow hat die Anfrage verarbeitet, aber kein Zusammenfassungsfeld zurückgegeben. Details siehe unten.';
+      resultSummary.appendChild(p);
+    }
+  }
+
+  function showResult(rawText){
+    processing.hidden = true;
+    resultBlock.hidden = false;
+
+    var parsed = null;
+    if(rawText){
+      try { parsed = JSON.parse(rawText); } catch(e) { parsed = null; }
+    }
+    if(Array.isArray(parsed)) parsed = parsed.length ? parsed[0] : null;
+
+    if(parsed && typeof parsed === 'object'){
+      renderStructuredResult(parsed);
+      resultRaw.textContent = JSON.stringify(parsed, null, 2);
+    } else if(rawText && rawText.trim()){
+      resultSummary.innerHTML = '';
+      var textP = document.createElement('p');
+      textP.className = 'result-field__value';
+      textP.textContent = rawText.trim();
+      resultSummary.appendChild(textP);
+      resultRaw.textContent = rawText;
+    } else {
+      resultSummary.innerHTML = '';
+      var emptyP = document.createElement('p');
+      emptyP.className = 'result-field__value';
+      emptyP.textContent = 'Der Workflow hat keine inhaltliche Rückmeldung gesendet. Die Anfrage wurde übermittelt.';
+      resultSummary.appendChild(emptyP);
+      resultRaw.textContent = '(leere Antwort)';
+    }
+  }
+
+  function showError(message){
+    statusPanel.hidden = true;
+    formPanel.hidden = false;
+    errorBanner.hidden = false;
+    errorDetail.textContent = message;
+    errorBanner.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    if(!form.reportValidity()) return;
+
+    var empfaengerListe = form.empfaenger_email.value
+      .split(',')
+      .map(function(addr){ return addr.trim(); })
+      .filter(function(addr){ return addr.length > 0; });
+
+    var payload = {
+      unternehmen: form.unternehmen.value.trim(),
+      website: form.website.value.trim(),
+      ansprechpartner: form.ansprechpartner.value.trim(),
+      kategorie: form.kategorie.value,
+      empfaenger_email: empfaengerListe
+    };
+
+    errorBanner.hidden = true;
+    confirmEmail.textContent = empfaengerListe.join(', ');
+    resultBlock.hidden = true;
+    processing.hidden = false;
+    formPanel.hidden = true;
+    statusPanel.hidden = false;
+    statusPanel.scrollIntoView({ behavior:'smooth', block:'start' });
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(function(res){
+      return res.text().then(function(raw){
+        if(!res.ok){
+          var detail = 'Server antwortete mit Status ' + res.status + '.';
+          if(raw && raw.trim()) detail += ' ' + raw.trim().slice(0, 300);
+          throw new Error(detail);
+        }
+        showResult(raw);
+      });
+    })
+    .catch(function(err){
+      var msg = (err && err.message) ? err.message : 'Unbekannter Fehler bei der Übermittlung.';
+      if(err instanceof TypeError){
+        msg = 'Keine Verbindung zum Server möglich. Bitte Netzwerkverbindung prüfen.';
+      }
+      showError(msg);
+    });
+  });
+
+  newRequestBtn.addEventListener('click', function(){
+    form.reset();
+    statusPanel.hidden = true;
+    resultBlock.hidden = true;
+    errorBanner.hidden = true;
+    formPanel.hidden = false;
+    form.unternehmen.focus();
+  });
+})();
+</script>
+
+</body>
+</html>
