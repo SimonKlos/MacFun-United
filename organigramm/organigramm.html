@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organigramm</title>
+<style id="page-size">@page { size: A3 landscape; margin: 10mm; }</style>
+<style>
+  :root{
+    /* Rot (leicht) */
+    --red-50:#FCF2F2; --red-100:#F8E1E1; --red-200:#F0C4C4; --red-300:#E39A9A;
+    --red-500:#C85A5A; --red-700:#9E3B3B; --red-900:#5E2323;
+    /* Grautöne */
+    --gray-25:#FAFAFA; --gray-50:#F4F4F5; --gray-100:#E9E9EB; --gray-200:#D9D9DD;
+    --gray-400:#A1A1AA; --gray-600:#5B5B63; --gray-800:#2E2E33;
+
+    --bg:var(--gray-50); --paper:#FFFFFF; --text:var(--gray-800); --muted:var(--gray-600);
+    --line:var(--gray-400); --card:#FFFFFF;
+    --font: "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.35}
+
+  /* ---------- Bedienleiste (nur Bildschirm) ---------- */
+  .toolbar{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--gray-100);
+    display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:10px 20px}
+  .toolbar h1{font-size:17px;margin:0 8px 0 0;color:var(--red-700);letter-spacing:.2px}
+  .btn{font:inherit;border:1px solid var(--gray-200);background:var(--paper);color:var(--text);border-radius:6px;
+    padding:6px 12px;cursor:pointer;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+  .btn:hover{border-color:var(--red-300);background:var(--red-50)}
+  .btn.primary{background:var(--red-500);border-color:var(--red-500);color:#fff}
+  .btn.primary:hover{background:var(--red-700)}
+  .toolbar select,.toolbar input[type=search]{font:inherit;border:1px solid var(--gray-200);border-radius:6px;padding:6px 10px;background:var(--paper);color:var(--text)}
+  .toolbar input[type=search]{min-width:180px}
+  .status{font-size:12px;color:var(--muted);padding:3px 10px;border-radius:999px;background:var(--gray-50);border:1px solid var(--gray-100)}
+  .status.demo{background:var(--red-50);border-color:var(--red-200);color:var(--red-700)}
+  .spacer{flex:1}
+  nav.jump{display:flex;flex-wrap:wrap;gap:6px;padding:10px 20px 0}
+  nav.jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:3px 10px;border-radius:999px;border:1px solid var(--gray-200);background:var(--paper)}
+  nav.jump a:hover{color:var(--red-700);border-color:var(--red-300)}
+  .warnings{margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#FFF7E6;border:1px solid #F3D9A4;color:#6B4A00;font-size:12px}
+  .warnings ul{margin:4px 0 0;padding-left:18px}
+  .drop-hint{position:fixed;inset:0;background:rgba(200,90,90,.12);border:3px dashed var(--red-500);display:none;
+    align-items:center;justify-content:center;font-size:22px;color:var(--red-700);z-index:50}
+  body.dragging .drop-hint{display:flex}
+
+  /* ---------- Blätter (eine Seite pro Bereich) ---------- */
+  main{padding:16px 20px 40px;display:flex;flex-direction:column;gap:20px}
+  .sheet{background:var(--paper);border:1px solid var(--gray-100);border-radius:10px;padding:18px 22px 22px;
+    box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .sheet-head{display:flex;align-items:flex-end;gap:16px;border-bottom:2px solid var(--red-200);padding-bottom:10px;margin-bottom:6px}
+  .sheet-head .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red-500);font-weight:600}
+  .sheet-head h2{margin:2px 0 0;font-size:22px;color:var(--gray-800)}
+  .sheet-head .facts{margin-left:auto;display:flex;gap:18px;color:var(--muted);font-size:12px;text-align:right}
+  .sheet-head .facts b{display:block;font-size:18px;color:var(--gray-800);font-variant-numeric:tabular-nums}
+  .legend{display:flex;gap:16px;align-items:center;color:var(--muted);font-size:11px;margin:8px 0 4px}
+  .legend .badge{position:static}
+  .chart-wrap{overflow:auto;padding:8px 0 4px}
+  .chart{width:max-content;margin:0 auto}
+  .sheet-foot{display:none}
+
+  /* ---------- Baum (Linien per CSS) ---------- */
+  .tree ul{position:relative;display:flex;justify-content:center;margin:0;padding:18px 0 0}
+  .tree li{list-style:none;position:relative;display:flex;flex-direction:column;align-items:center;padding:18px 5px 0}
+  .tree > ul{padding-top:0}
+  .tree > ul > li{padding-top:0}
+  .tree li::before,.tree li::after{content:"";position:absolute;top:0;right:50%;width:50%;height:18px;border-top:1.5px solid var(--line)}
+  .tree li::after{right:auto;left:50%;border-left:1.5px solid var(--line)}
+  .tree li:only-child::before,.tree li:only-child::after{display:none}
+  .tree li:only-child{padding-top:0}
+  .tree li:first-child::before,.tree li:last-child::after{border:0 none}
+  .tree li:last-child::before{border-right:1.5px solid var(--line);border-radius:0 6px 0 0}
+  .tree li:first-child::after{border-radius:6px 0 0 0}
+  .tree ul ul::before{content:"";position:absolute;top:0;left:50%;height:18px;border-left:1.5px solid var(--line)}
+  .tree > ul > li::before,.tree > ul > li::after{display:none}
+
+  /* ---------- Karte ---------- */
+  .card{position:relative;width:176px;background:var(--card);border:1px solid var(--gray-200);border-top:4px solid var(--red-300);
+    border-radius:8px;padding:8px 10px 8px;text-align:left;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .card .n{font-weight:650;font-size:13px;color:var(--gray-800);padding-right:26px;overflow-wrap:anywhere}
+  .card .f{font-size:11.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+  .card .t{margin-top:6px;padding-top:5px;border-top:1px dashed var(--gray-100);font-size:10.5px;color:var(--muted);display:flex;justify-content:space-between}
+  .card .t b{color:var(--gray-800);font-variant-numeric:tabular-nums}
+  .badge{position:absolute;top:7px;right:8px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--red-500);color:#fff;
+    font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+  .badge.lite{background:var(--gray-100);color:var(--gray-600)}
+  .card.lvl-0{background:var(--red-100);border-color:var(--red-200);border-top-color:var(--red-500);width:200px}
+  .card.lvl-0 .n{font-size:14px}
+  .card.lvl-1{border-top-color:var(--red-300)}
+  .card.lvl-2{border-top-color:var(--red-200)}
+  .card.lvl-3,.card.lvl-4,.card.lvl-5,.card.lvl-6{border-top-color:var(--gray-200)}
+  .card.ceo{background:var(--red-700);border-color:var(--red-700);color:#fff;width:220px}
+  .card.ceo .n,.card.ceo .f,.card.ceo .t,.card.ceo .t b{color:#fff}
+  .card.ceo .badge{background:#fff;color:var(--red-700)}
+  .card.ceo .t{border-top-color:rgba(255,255,255,.3)}
+  .card.area-link{cursor:pointer}
+  .card.area-link:hover{box-shadow:0 0 0 2px var(--red-300)}
+  .card.hit,.member.hit{outline:3px solid #F2B705;outline-offset:2px}
+
+  /* Mitarbeitende ohne eigene Reports: kompakte Liste statt vieler Kästchen */
+  .members{width:176px;background:var(--gray-25);border:1px solid var(--gray-200);border-radius:8px;padding:4px 0}
+  .member{padding:4px 10px;border-bottom:1px solid var(--gray-100)}
+  .member:last-child{border-bottom:0}
+  .member .n{font-size:12px;font-weight:600;color:var(--gray-800)}
+  .member .f{font-size:10.5px;color:var(--muted)}
+
+  /* Kompakt-Layout: tiefe Ebenen eingerückt untereinander statt nebeneinander */
+  .hnode{display:flex;flex-direction:column;align-items:flex-start}
+  .hang{display:flex;flex-direction:column;gap:8px;padding-top:8px;margin-left:16px}
+  .h-item{position:relative;padding-left:14px}
+  .h-item::before{content:"";position:absolute;left:0;top:20px;width:12px;border-top:1.5px solid var(--line)}
+  .h-item::after{content:"";position:absolute;left:0;top:-8px;bottom:0;border-left:1.5px solid var(--line)}
+  .h-item:last-child::after{bottom:auto;height:28px}
+
+  /* Übersicht: Kennzahlen der Bereiche */
+  .overview .card.lvl-0{width:224px}
+  .overview .card .t{gap:10px;white-space:nowrap}
+
+  /* ---------- Druck / PDF ---------- */
+  @media print{
+    body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .toolbar,nav.jump,.warnings,.drop-hint{display:none !important}
+    main{padding:0;gap:0;display:block}
+    .sheet{border:0;border-radius:0;box-shadow:none;padding:0;break-after:page;page-break-after:always;
+      height:var(--sheet-h);display:flex;flex-direction:column;overflow:hidden}
+    .sheet:last-child{break-after:auto;page-break-after:auto}
+    .chart-wrap{overflow:visible;flex:1;display:flex;align-items:flex-start;justify-content:center;padding-top:10px}
+    .sheet-foot{display:flex;justify-content:space-between;font-size:9px;color:var(--gray-400);border-top:1px solid var(--gray-100);padding-top:4px}
+    .card,.members{box-shadow:none}
+    .card.hit,.member.hit{outline:0}
+  }
+</style>
+</head>
+<body>
+<div class="drop-hint">Excel-Datei hier ablegen</div>
+
+<header class="toolbar">
+  <h1>Organigramm</h1>
+  <span id="status" class="status demo">Demo-Daten (fiktiv)</span>
+  <label class="btn primary" title="Excel (.xlsx) oder CSV wählen – wird nur lokal im Browser gelesen">
+    Excel laden<input id="file" type="file" accept=".xlsx,.xls,.csv" hidden>
+  </label>
+  <a class="btn" href="vorlage_organigramm.xlsx" download>Vorlage herunterladen</a>
+  <input id="search" type="search" placeholder="Name oder Funktion suchen …">
+  <span class="spacer"></span>
+  <select id="format" title="Papierformat für Druck/PDF">
+    <option value="A3">A3 quer</option>
+    <option value="A4">A4 quer</option>
+  </select>
+  <button class="btn" id="print">Drucken / PDF</button>
+</header>
+<nav class="jump" id="jump"></nav>
+<div id="warnings"></div>
+<main id="main"></main>
+
+<script src="lib/xlsx.full.min.js"></script>
+<script src="demo-daten.js"></script>
+<script>
+(() => {
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const COMPANY = "Musterfirma GmbH";
+  const PAPER = { A3:{w:420,h:297}, A4:{w:297,h:210} };
+  const MARGIN_MM = 10, MM = 96/25.4;
+  let currentSource = "Demo-Daten (fiktiv)";
+
+  /* ---------- Spalten erkennen (tolerant gegenüber Schreibweisen) ---------- */
+  const ALIASES = {
+    id:["id","personalnummer","pers.-nr.","persnr","nr"],
+    name:["name","mitarbeiter","mitarbeiter/in","person"],
+    funktion:["funktion","position","rolle","titel","stelle","jobtitel"],
+    bereich:["bereich","abteilung","department","ressort"],
+    chef:["vorgesetzter","vorgesetzte","vorgesetzter_id","vorgesetzte/r","führungskraft","manager","berichtet an","reports to"]
+  };
+  function normalizeRows(raw){
+    if(!raw.length) return [];
+    const keys = Object.keys(raw[0]);
+    const map = {};
+    for(const [k, al] of Object.entries(ALIASES)){
+      map[k] = keys.find(h => al.includes(h.trim().toLowerCase()));
+    }
+    return raw.map(r => ({
+      id: String(r[map.id] ?? "").trim(),
+      name: String(r[map.name] ?? "").trim(),
+      funktion: String(r[map.funktion] ?? "").trim(),
+      bereich: String(r[map.bereich] ?? "").trim(),
+      chef: String(r[map.chef] ?? "").trim()
+    })).filter(r => r.id || r.name);
+  }
+
+  /* ---------- Baum aufbauen + prüfen ---------- */
+  function buildTree(rows){
+    const warn = [];
+    const byId = new Map(), byName = new Map();
+    rows.forEach((r, i) => {
+      if(!r.id){ r.id = "#" + (i + 2); }
+      if(byId.has(r.id)) warn.push(`Doppelte ID „${r.id}“ (Zeile ${i + 2}) – zweiter Eintrag wird ignoriert.`);
+      else byId.set(r.id, {...r, kids:[], order:i});
+      if(r.name){ byName.has(r.name) ? byName.set(r.name, null) : byName.set(r.name, r.id); }
+    });
+    const roots = [];
+    for(const p of byId.values()){
+      if(!p.chef){ roots.push(p); continue; }
+      let boss = byId.get(p.chef);
+      if(!boss && byName.get(p.chef)) boss = byId.get(byName.get(p.chef));
+      if(!boss){
+        warn.push(`${p.name || p.id}: Vorgesetzte/r „${p.chef}“ nicht gefunden${byName.get(p.chef) === null ? " (Name mehrdeutig – bitte ID verwenden)" : ""}.`);
+        roots.push(p); continue;
+      }
+      if(boss === p){ warn.push(`${p.name}: ist als eigene/r Vorgesetzte/r eingetragen.`); roots.push(p); continue; }
+      p.parent = boss; boss.kids.push(p);
+    }
+    // Zyklen erkennen
+    for(const p of byId.values()){
+      const seen = new Set(); let c = p;
+      while(c.parent){ if(seen.has(c)){ warn.push(`Zirkelbezug bei ${p.name || p.id}.`); c.parent.kids = c.parent.kids.filter(k => k !== c); roots.push(c); delete c.parent; break; } seen.add(c); c = c.parent; }
+    }
+    let root;
+    if(roots.length === 1) root = roots[0];
+    else {
+      if(roots.length > 1) warn.push(`${roots.length} Personen ohne (gültige) Vorgesetzte – sie werden unter einer gemeinsamen Spitze gezeigt.`);
+      root = {id:"__root", name:COMPANY, funktion:"", bereich:"", kids:roots, virtual:true};
+      roots.forEach(r => r.parent = root);
+    }
+    const walk = (n, d) => { n.depth = d; n.kids.sort((a,b) => a.order - b.order); n.total = 0; n.maxDepth = d;
+      for(const k of n.kids){ walk(k, d + 1); n.total += 1 + k.total; n.maxDepth = Math.max(n.maxDepth, k.maxDepth); } };
+    walk(root, 0);
+    return {root, warn, count: byId.size};
+  }
+
+  /* ---------- Rendering ---------- */
+  function card(n, lvl, extraCls = ""){
+    const direct = n.kids.length;
+    const badge = direct ? `<span class="badge" title="${direct} direkte Reports">${direct}</span>` : "";
+    const foot = direct ? `<div class="t"><span>Direkt <b>${direct}</b></span><span>Team gesamt <b>${n.total}</b></span></div>` : "";
+    return `<div class="card lvl-${Math.min(lvl,6)} ${extraCls}" data-s="${esc((n.name + " " + n.funktion).toLowerCase())}">
+      ${badge}<div class="n">${esc(n.name)}</div><div class="f">${esc(n.funktion)}</div>${foot}</div>`;
+  }
+  function membersBox(list){
+    return `<div class="members">${list.map(m =>
+      `<div class="member" data-s="${esc((m.name + " " + m.funktion).toLowerCase())}"><div class="n">${esc(m.name)}</div><div class="f">${esc(m.funktion)}</div></div>`).join("")}</div>`;
+  }
+  // Kinder ohne eigene Reports werden zu einer kompakten Liste gebündelt -> Diagramm bleibt schmal.
+  // Ab Ebene `hangFrom` werden Unterbäume eingerückt untereinander gezeigt (für breite/tiefe Bereiche).
+  function subtree(n, lvl, hangFrom = Infinity){
+    if(!n.kids.length) return card(n, lvl);
+    const leaves = n.kids.filter(k => !k.kids.length), branches = n.kids.filter(k => k.kids.length);
+    if(lvl >= hangFrom){
+      const items = branches.map(b => `<div class="h-item">${subtree(b, lvl + 1, hangFrom)}</div>`);
+      if(leaves.length) items.unshift(`<div class="h-item">${membersBox(leaves)}</div>`);
+      return `<div class="hnode">${card(n, lvl)}<div class="hang">${items.join("")}</div></div>`;
+    }
+    const items = branches.map(b => `<li>${subtree(b, lvl + 1, hangFrom)}</li>`);
+    if(leaves.length) items.unshift(`<li>${membersBox(leaves)}</li>`);
+    return `${card(n, lvl)}<ul>${items.join("")}</ul>`;
+  }
+  // Wählt je Bereich das Layout, das auf dem gewählten Papierformat am größten gedruckt werden kann.
+  function chooseLayouts(){
+    const [w, h] = printArea();
+    document.querySelectorAll(".sheet[data-area]").forEach(s => {
+      const a = AREAS[+s.dataset.area], c = s.querySelector(".chart");
+      const depth = a.maxDepth - a.depth;
+      let best = null;
+      for(let k = depth + 1; k >= 1; k--){
+        c.innerHTML = `<ul><li>${subtree(a, 0, k)}</li></ul>`;
+        const z = Math.min(w / c.scrollWidth, (h - 120) / c.scrollHeight);
+        if(!best || z > best.z * 1.08) best = {k, z};
+      }
+      c.innerHTML = `<ul><li>${subtree(a, 0, best.k)}</li></ul>`;
+    });
+    applySearch();
+  }
+  function printArea(){
+    const p = PAPER[$("#format").value];
+    return [(p.w - 2*MARGIN_MM) * MM, (p.h - 2*MARGIN_MM) * MM];
+  }
+  let AREAS = [];
+  function sheet({id, area = "", kicker, title, facts, chart, legend = true}){
+    return `<section class="sheet" id="${id}" ${area !== "" ? `data-area="${area}"` : ""}>
+      <div class="sheet-head"><div><div class="kicker">${esc(kicker)}</div><h2>${esc(title)}</h2></div>
+        <div class="facts">${facts.map(([l,v]) => `<div><b>${v}</b>${esc(l)}</div>`).join("")}</div></div>
+      ${legend ? `<div class="legend"><span><span class="badge">3</span> direkte Reports</span><span>„Team gesamt“ = alle Personen darunter</span><span>Graue Liste = Mitarbeitende ohne eigene Führungsverantwortung</span></div>` : ""}
+      <div class="chart-wrap"><div class="chart tree">${chart}</div></div>
+      <div class="sheet-foot"><span>${esc(COMPANY)} · Organigramm · ${esc(title)}</span><span>Stand ${new Date().toLocaleDateString("de-DE")}</span></div>
+    </section>`;
+  }
+
+  function render(rows){
+    const {root, warn, count} = buildTree(normalizeRows(rows));
+    const areas = root.kids.filter(k => k.kids.length);
+    const staff = root.kids.filter(k => !k.kids.length);
+    const areaName = a => a.bereich || a.funktion || a.name;
+
+    // Übersicht: Spitze + Bereichsleitungen
+    const ovItems = areas.map((a, i) => `<li><div onclick="location.hash='#b${i}'">${card(a, 0, "area-link").replace('<div class="t">',
+      `<div class="t"><span>Ebenen <b>${a.maxDepth - a.depth + 1}</b></span>`)}</div></li>`);
+    if(staff.length) ovItems.unshift(`<li>${membersBox(staff)}</li>`);
+    const top = root.virtual ? `<div class="card ceo"><div class="n">${esc(root.name)}</div></div>` : card(root, 0, "ceo");
+    let html = sheet({id:"uebersicht", kicker:"Übersicht", title:COMPANY,
+      facts:[["Personen", count], ["Bereiche", areas.length], ["Ebenen max.", root.maxDepth + 1]],
+      chart:`<ul class="overview"><li>${top}<ul>${ovItems.join("")}</ul></li></ul>`});
+
+    areas.forEach((a, i) => {
+      html += sheet({id:"b" + i, area:i, kicker:"Bereich", title:areaName(a),
+        facts:[["Personen", a.total + 1], ["Führungskräfte", countLeaders(a)], ["Ebenen", a.maxDepth - a.depth + 1]],
+        chart:`<ul><li>${subtree(a, 0)}</li></ul>`});
+    });
+    $("#main").innerHTML = html;
+    $("#jump").innerHTML = `<a href="#uebersicht">Übersicht</a>` + areas.map((a,i) => `<a href="#b${i}">${esc(areaName(a))}</a>`).join("");
+    $("#warnings").innerHTML = warn.length ? `<div class="warnings"><b>Hinweise zur Datei (${warn.length})</b><ul>${warn.slice(0,20).map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : "";
+    AREAS = areas;
+    chooseLayouts();
+  }
+  const countLeaders = n => (n.kids.length ? 1 : 0) + n.kids.reduce((s,k) => s + countLeaders(k), 0);
+
+  /* ---------- Datei laden (nur lokal) ---------- */
+  function loadFile(file){
+    if(!file) return;
+    if(typeof XLSX === "undefined"){ alert("Excel-Bibliothek (lib/xlsx.full.min.js) nicht gefunden."); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      try{
+        const wb = XLSX.read(new Uint8Array(e.target.result), {type:"array"});
+        const name = wb.SheetNames.includes("Daten") ? "Daten" : wb.SheetNames[0];
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], {defval:"", raw:false});
+        render(rows);
+        currentSource = file.name;
+        const s = $("#status"); s.textContent = `${file.name} · lokal geladen`; s.classList.remove("demo");
+      }catch(err){ alert("Datei konnte nicht gelesen werden: " + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+  $("#file").addEventListener("change", e => { loadFile(e.target.files[0]); e.target.value = ""; });
+  addEventListener("dragover", e => { e.preventDefault(); document.body.classList.add("dragging"); });
+  addEventListener("dragleave", e => { if(!e.relatedTarget) document.body.classList.remove("dragging"); });
+  addEventListener("drop", e => { e.preventDefault(); document.body.classList.remove("dragging"); loadFile(e.dataTransfer.files[0]); });
+
+  /* ---------- Suche ---------- */
+  function applySearch(){
+    const q = $("#search").value.trim().toLowerCase();
+    let first = null;
+    document.querySelectorAll("[data-s]").forEach(el => {
+      const hit = q.length > 1 && el.dataset.s.includes(q);
+      el.classList.toggle("hit", hit);
+      if(hit && !first) first = el;
+    });
+    if(first) first.scrollIntoView({block:"center", inline:"center", behavior:"smooth"});
+  }
+  $("#search").addEventListener("input", applySearch);
+
+  /* ---------- Druck: jede Seite automatisch auf das Blatt skalieren ---------- */
+  function fitForPrint(){
+    const [w, h] = printArea();
+    $("#page-size").textContent = `@page { size: ${$("#format").value} landscape; margin: ${MARGIN_MM}mm; }`;
+    document.documentElement.style.setProperty("--sheet-h", (h - 2) + "px");
+    document.querySelectorAll(".sheet").forEach(s => {
+      const c = s.querySelector(".chart");
+      c.style.zoom = 1;
+      const headH = s.querySelector(".sheet-head").offsetHeight + (s.querySelector(".legend")?.offsetHeight || 0) + 70;
+      const z = Math.min(1.35, w / c.scrollWidth, (h - headH) / c.scrollHeight);
+      c.style.zoom = z.toFixed(3);
+    });
+  }
+  function resetPrint(){ document.querySelectorAll(".chart").forEach(c => c.style.zoom = ""); }
+  addEventListener("beforeprint", fitForPrint);
+  addEventListener("afterprint", resetPrint);
+  $("#format").addEventListener("change", chooseLayouts);
+  $("#print").addEventListener("click", () => { fitForPrint(); print(); });
+  window.fitForPrint = fitForPrint;
+
+  render(window.DEMO_DATA || []);
+})();
+</script>
+</body>
+</html>
