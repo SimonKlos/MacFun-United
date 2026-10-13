@@ -33,6 +33,7 @@ Ebenen, direkte Reports und Teamgrößen werden automatisch berechnet.
 |---|---|
 | `organigramm.html` | Organigramm-Seite (Bildschirm + Druck/PDF), alles in einer Datei |
 | `vorlage_organigramm.xlsx` | Excel-Vorlage mit fiktiven Beispieldaten und Anleitung |
+| `testdaten_2_kleine_firma.xlsx` | zweiter fiktiver Testdatensatz: 43 Personen, 3 Bereiche (4, 3 und 2 Ebenen) |
 | `Organigramm_Mockup.pdf` | Beispiel-PDF (A3 quer) mit den fiktiven Daten |
 | `tools/beispieldaten_erzeugen.py` | erzeugt Vorlage neu und setzt die Demo-Daten in die HTML ein |
 | `tools/pdf_erstellen.mjs` | optional: PDF per Kommandozeile (`node tools/pdf_erstellen.mjs daten.xlsx A3`, benötigt Playwright) |
