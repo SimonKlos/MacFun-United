@@ -2,7 +2,7 @@
 
 Ausgabe:
   ../vorlage_organigramm.xlsx   Excel-Vorlage (Blatt "Daten" + Blatt "Anleitung")
-  ../demo-daten.js              dieselben Daten fuer die HTML-Seite (Demo-Modus)
+  ../organigramm.html           dieselben Daten werden dort als Demo eingesetzt
 
 Alle Namen sind frei erfunden. Aufruf:  python3 beispieldaten_erzeugen.py
 """
@@ -157,11 +157,12 @@ an.column_dimensions["A"].width = 110
 
 wb.save(OUT / "vorlage_organigramm.xlsx")
 
-# ---------- JS fuer Demo-Modus ----------
+# ---------- Demo-Daten in organigramm.html einsetzen ----------
 data = [dict(zip(HEADER, r)) for r in rows]
-(OUT / "demo-daten.js").write_text(
-    "// Fiktive Beispieldaten – erzeugt von tools/beispieldaten_erzeugen.py\n"
-    "window.DEMO_DATA = " + json.dumps(data, ensure_ascii=False, indent=0) + ";\n",
-    encoding="utf-8")
+html_path = OUT / "organigramm.html"
+html = html_path.read_text(encoding="utf-8")
+start, end = "/*DEMO-DATEN-START*/", "/*DEMO-DATEN-ENDE*/"
+a, b = html.index(start) + len(start), html.index(end)
+html_path.write_text(html[:a] + json.dumps(data, ensure_ascii=False) + html[b:], encoding="utf-8")
 
 print(f"{len(rows)} Personen geschrieben.")
