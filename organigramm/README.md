@@ -1,40 +1,39 @@
 # Organigramm (HTML + PDF)
 
-Ein Organigramm aus einer Excel-Liste: eine Übersichtsseite mit allen Ebenen plus eine Seite pro Bereich.
+`organigramm.html` ist **eine einzige, eigenständige Datei**: herunterladen, per Doppelklick im Browser öffnen,
+Excel laden, als PDF drucken. Keine Installation, kein Internet nötig, die Daten bleiben lokal im Browser.
 
-**`organigramm.html` ist eine einzige, eigenständige Datei** – einfach herunterladen, per Doppelklick
-öffnen, fertig. Keine Installation, kein Internet nötig.
-Ebenen, direkte Reports und Teamgrößen werden automatisch berechnet.
+## Was erzeugt wird (je Org-Einheit 1, z. B. „Männerfußball“)
 
-## Benutzung
+1. **Organigramm in FTE**: schwarz = gesamt, dunkelgrau = Bereich (N-1, summiert), hellgrau = Org-Einheit,
+   weiße Kästchen = Personen mit FTE. Praktikant/innen & Aushilfen stehen in **blauer** Schrift.
+2. **Organigramm in Köpfen**: gleiche Struktur, gezählt nach Personen.
+3. **Aufbau nach Bereichen**: Wasserfall je Bereich (N-1) bis Gesamt, links in FTE, rechts in Köpfen.
 
-1. In der Seite auf **Vorlage herunterladen** klicken (oder `vorlage_organigramm.xlsx` nehmen) und und das Blatt **Daten** ausfüllen (Beispielzeilen sind fiktiv und können gelöscht werden):
+## Erwartete Excel-Spalten
 
-   | ID | Name | Funktion | Bereich | Vorgesetzter |
-   |----|------|----------|---------|--------------|
-   | P001 | … | Geschäftsführung | Geschäftsführung | *(leer = Spitze)* |
-   | P002 | … | Bereichsleitung Vertrieb | Vertrieb | P001 |
+`N-1 (Person) | N-2 (Person) | N-3 (Person) | Org-Einheit 1 | Org-Einheit 2 | Org-Einheit 3 | Mitarbeitername | Summe von FTE | Personalfall | Organigramm final`
 
-   *Vorgesetzter* darf die ID **oder** der exakte Name sein.
-2. `organigramm.html` im Browser öffnen → **Excel laden** (oder die Datei ins Fenster ziehen).
-3. **Drucken / PDF** → im Druckdialog „Als PDF speichern“. Format (A3/A4 quer) oben rechts wählen.
-   Jede Seite wird automatisch passend skaliert; sehr tiefe/breite Bereiche werden automatisch kompakt (eingerückt) dargestellt.
+| Spalte | Verwendung |
+|---|---|
+| Org-Einheit 1 | oberste Einheit / Seitentitel (Teil vor „ / “, z. B. „Männerfußball“) |
+| Organigramm final | Bereich auf Ebene N-1 (dunkelgraue Kästen, Wasserfall-Zeilen) |
+| Org-Einheit 2 | Org-Einheit darunter (hellgraue Kästen), Präfix „Männerfußball - “ wird entfernt; umschaltbar auf Org-Einheit 3 |
+| Mitarbeitername | Personen-Kästchen; jede Zeile = 1 Kopf |
+| Summe von FTE | FTE je Person (Komma oder Punkt) |
+| Org-Einheit 2/3 enthält „Prakti“ oder „Aushilf“ | Person wird blau dargestellt und direkt unter dem Bereich gezeigt |
+| N-1/N-2/N-3 (Person), Personalfall | werden aktuell nicht verwendet |
 
-## Datenschutz
-
-- Die Excel-Datei wird **nur lokal im Browser** gelesen: kein Upload, keine Speicherung, kein Netzwerkzugriff
-  (die Excel-Bibliothek ist in die HTML-Datei eingebettet, es werden keine externen Skripte geladen).
-- Echte Namen müssen daher nie weitergegeben werden. Für Anpassungen am Layout reicht eine anonymisierte
-  Struktur (z. B. Namen durch „Person 1“, „Person 2“ … ersetzt).
+Die Kopfzeile darf auch weiter unten stehen (z. B. Pivot-Tabelle mit Filtern darüber). Summenzeilen
+(„Gesamtergebnis“) und Zeilen ohne Mitarbeitername werden ignoriert. Leeres „Org-Einheit 1“ wird von oben übernommen.
 
 ## Dateien
 
 | Datei | Zweck |
 |---|---|
 | `organigramm.html` | Organigramm-Seite (Bildschirm + Druck/PDF), alles in einer Datei |
-| `vorlage_organigramm.xlsx` | Excel-Vorlage mit fiktiven Beispieldaten und Anleitung |
-| `testdaten_2_kleine_firma.xlsx` | zweiter fiktiver Testdatensatz: 43 Personen, 3 Bereiche (4, 3 und 2 Ebenen) |
-| `Organigramm_Mockup.pdf` | Beispiel-PDF (A3 quer) mit den fiktiven Daten |
-| `tools/beispieldaten_erzeugen.py` | erzeugt Vorlage neu und setzt die Demo-Daten in die HTML ein |
+| `testdaten_organigramm.xlsx` | fiktive Testdaten im Aufbau der Original-Excel (64,75 FTE / 74 Köpfe) |
+| `Organigramm_Mockup.pdf` | Beispiel-PDF (A3 quer) mit den Testdaten |
+| `tools/beispieldaten_erzeugen.py` | erzeugt die Testdaten neu und setzt sie als Demo in die HTML ein |
 | `tools/pdf_erstellen.mjs` | optional: PDF per Kommandozeile (`node tools/pdf_erstellen.mjs daten.xlsx A3`, benötigt Playwright) |
 | `LICENSE-sheetjs.txt` | Lizenz der eingebetteten Excel-Bibliothek SheetJS 0.18.5 (Apache-2.0) |

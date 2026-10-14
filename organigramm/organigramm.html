@@ -7,128 +7,107 @@
 <style id="page-size">@page { size: A3 landscape; margin: 10mm; }</style>
 <style>
   :root{
-    /* Rot (leicht) */
-    --red-50:#FCF2F2; --red-100:#F8E1E1; --red-200:#F0C4C4; --red-300:#E39A9A;
-    --red-500:#C85A5A; --red-700:#9E3B3B; --red-900:#5E2323;
-    /* Grautöne */
-    --gray-25:#FAFAFA; --gray-50:#F4F4F5; --gray-100:#E9E9EB; --gray-200:#D9D9DD;
-    --gray-400:#A1A1AA; --gray-600:#5B5B63; --gray-800:#2E2E33;
-
-    --bg:var(--gray-50); --paper:#FFFFFF; --text:var(--gray-800); --muted:var(--gray-600);
-    --line:var(--gray-400); --card:#FFFFFF;
-    --font: "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
+    --ink:#111111; --text:#1F1F1F; --muted:#6B6B6B;
+    --g-dark:#7F7F7F; --g-mid:#A6A6A6; --g-light:#E4E4E4; --g-faint:#F3F3F3; --line:#BFBFBF;
+    --blue:#1F5FBF; --paper:#FFFFFF; --bg:#EDEDED;
+    --font:"Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+    --font-head:"Arial Black", "Helvetica Neue", Arial, sans-serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.35}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.3}
 
   /* ---------- Bedienleiste (nur Bildschirm) ---------- */
-  .toolbar{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--gray-100);
-    display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:10px 20px}
-  .toolbar h1{font-size:17px;margin:0 8px 0 0;color:var(--red-700);letter-spacing:.2px}
-  .btn{font:inherit;border:1px solid var(--gray-200);background:var(--paper);color:var(--text);border-radius:6px;
-    padding:6px 12px;cursor:pointer;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
-  .btn:hover{border-color:var(--red-300);background:var(--red-50)}
-  .btn.primary{background:var(--red-500);border-color:var(--red-500);color:#fff}
-  .btn.primary:hover{background:var(--red-700)}
-  .toolbar select,.toolbar input[type=search]{font:inherit;border:1px solid var(--gray-200);border-radius:6px;padding:6px 10px;background:var(--paper);color:var(--text)}
-  .toolbar input[type=search]{min-width:180px}
-  .status{font-size:12px;color:var(--muted);padding:3px 10px;border-radius:999px;background:var(--gray-50);border:1px solid var(--gray-100)}
-  .status.demo{background:var(--red-50);border-color:var(--red-200);color:var(--red-700)}
+  .toolbar{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--g-light);
+    display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:10px 20px}
+  .toolbar h1{font:italic 900 17px/1 var(--font-head);text-transform:uppercase;margin:0 6px 0 0;color:var(--ink)}
+  .btn{font:inherit;border:1px solid var(--line);background:var(--paper);color:var(--text);border-radius:4px;
+    padding:6px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+  .btn:hover{border-color:var(--ink)}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+  .btn.primary:hover{background:#333}
+  .toolbar select,.toolbar input[type=search]{font:inherit;border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--paper);color:var(--text)}
+  .toolbar label.opt{display:inline-flex;gap:6px;align-items:center;color:var(--muted);font-size:12px}
+  .status{font-size:12px;color:var(--muted);padding:3px 10px;border-radius:999px;background:var(--g-faint);border:1px solid var(--g-light)}
+  .status.demo{color:var(--blue);border-color:#C9D8F0;background:#F1F5FC}
   .spacer{flex:1}
   nav.jump{display:flex;flex-wrap:wrap;gap:6px;padding:10px 20px 0}
-  nav.jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:3px 10px;border-radius:999px;border:1px solid var(--gray-200);background:var(--paper)}
-  nav.jump a:hover{color:var(--red-700);border-color:var(--red-300)}
-  .warnings{margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#FFF7E6;border:1px solid #F3D9A4;color:#6B4A00;font-size:12px}
+  nav.jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--paper)}
+  nav.jump a:hover{color:var(--ink);border-color:var(--ink)}
+  .warnings{margin:12px 20px 0;padding:10px 14px;border-radius:6px;background:#FFF7E6;border:1px solid #F3D9A4;color:#6B4A00;font-size:12px}
   .warnings ul{margin:4px 0 0;padding-left:18px}
-  .drop-hint{position:fixed;inset:0;background:rgba(200,90,90,.12);border:3px dashed var(--red-500);display:none;
-    align-items:center;justify-content:center;font-size:22px;color:var(--red-700);z-index:50}
+  .drop-hint{position:fixed;inset:0;background:rgba(0,0,0,.06);border:3px dashed var(--ink);display:none;
+    align-items:center;justify-content:center;font-size:22px;color:var(--ink);z-index:50}
   body.dragging .drop-hint{display:flex}
 
-  /* ---------- Blätter (eine Seite pro Bereich) ---------- */
+  /* ---------- Blätter ---------- */
   main{padding:16px 20px 40px;display:flex;flex-direction:column;gap:20px}
-  .sheet{background:var(--paper);border:1px solid var(--gray-100);border-radius:10px;padding:18px 22px 22px;
-    box-shadow:0 1px 2px rgba(0,0,0,.04)}
-  .sheet-head{display:flex;align-items:flex-end;gap:16px;border-bottom:2px solid var(--red-200);padding-bottom:10px;margin-bottom:6px}
-  .sheet-head .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red-500);font-weight:600}
-  .sheet-head h2{margin:2px 0 0;font-size:22px;color:var(--gray-800)}
-  .sheet-head .facts{margin-left:auto;display:flex;gap:18px;color:var(--muted);font-size:12px;text-align:right}
-  .sheet-head .facts b{display:block;font-size:18px;color:var(--gray-800);font-variant-numeric:tabular-nums}
-  .legend{display:flex;gap:16px;align-items:center;color:var(--muted);font-size:11px;margin:8px 0 4px}
-  .legend .badge{position:static}
-  .chart-wrap{overflow:auto;padding:8px 0 4px}
+  .sheet{background:var(--paper);border:1px solid var(--g-light);padding:22px 28px 24px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .sheet-head{display:flex;align-items:flex-start;gap:24px;margin-bottom:14px}
+  .sheet-head h2{margin:0;font:italic 900 26px/1.1 var(--font-head);text-transform:uppercase;letter-spacing:.2px;color:var(--ink)}
+  .sheet-head h2 .unit{color:var(--g-dark)}
+  .sheet-head .sub{margin-top:8px;width:380px;font-size:11px;color:var(--muted)}
+  .sheet-head .sub div{border-top:1px solid var(--ink);padding:3px 0 5px}
+  .legend{margin-left:auto;display:grid;grid-template-columns:auto auto;gap:5px 10px;align-items:center;font-size:11.5px;color:var(--text)}
+  .chip{display:inline-flex;align-items:center;justify-content:center;width:40px;height:16px;font-size:10px;font-weight:700;color:#fff}
+  .chip.k{background:var(--ink)} .chip.d{background:var(--g-dark)} .chip.l{background:var(--g-light);color:var(--text)}
+  .chip.p{background:#fff;border:1px solid var(--line);color:var(--text);font-weight:400}
+  .chip.b{background:#fff;border:1px solid var(--line);color:var(--blue);font-weight:400}
+  .chart-wrap{overflow:auto;padding:4px 0}
   .chart{width:max-content;margin:0 auto}
   .sheet-foot{display:none}
 
-  /* ---------- Baum (Linien per CSS) ---------- */
-  .tree ul{position:relative;display:flex;justify-content:center;margin:0;padding:18px 0 0}
-  .tree li{list-style:none;position:relative;display:flex;flex-direction:column;align-items:center;padding:18px 5px 0}
-  .tree > ul{padding-top:0}
-  .tree > ul > li{padding-top:0}
-  .tree li::before,.tree li::after{content:"";position:absolute;top:0;right:50%;width:50%;height:18px;border-top:1.5px solid var(--line)}
-  .tree li::after{right:auto;left:50%;border-left:1.5px solid var(--line)}
+  /* ---------- Organigramm ---------- */
+  .tree ul{position:relative;display:flex;justify-content:center;margin:0;padding:22px 0 0}
+  .tree li{list-style:none;position:relative;display:flex;flex-direction:column;align-items:center;padding:22px 0 0}
+  .tree > ul{padding-top:0} .tree > ul > li{padding-top:0}
+  .tree li::before,.tree li::after{content:"";position:absolute;top:0;right:50%;width:50%;height:22px;border-top:1px solid var(--g-mid)}
+  .tree li::after{right:auto;left:50%;border-left:1px solid var(--g-mid)}
   .tree li:only-child::before,.tree li:only-child::after{display:none}
   .tree li:only-child{padding-top:0}
   .tree li:first-child::before,.tree li:last-child::after{border:0 none}
-  .tree li:last-child::before{border-right:1.5px solid var(--line);border-radius:0 6px 0 0}
-  .tree li:first-child::after{border-radius:6px 0 0 0}
-  .tree ul ul::before{content:"";position:absolute;top:0;left:50%;height:18px;border-left:1.5px solid var(--line)}
+  .tree li:last-child::before{border-right:1px solid var(--g-mid)}
+  .tree ul ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:1px solid var(--g-mid)}
   .tree > ul > li::before,.tree > ul > li::after{display:none}
+  .tree ul ul > li{padding-left:14px;padding-right:14px}
 
-  /* ---------- Karte ---------- */
-  .card{position:relative;width:176px;background:var(--card);border:1px solid var(--gray-200);border-top:4px solid var(--red-300);
-    border-radius:8px;padding:8px 10px 8px;text-align:left;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-  .card .n{font-weight:650;font-size:13px;color:var(--gray-800);padding-right:26px;overflow-wrap:anywhere}
-  .card .f{font-size:11.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
-  .card .t{margin-top:6px;padding-top:5px;border-top:1px dashed var(--gray-100);font-size:10.5px;color:var(--muted);display:flex;justify-content:space-between}
-  .card .t b{color:var(--gray-800);font-variant-numeric:tabular-nums}
-  .badge{position:absolute;top:7px;right:8px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--red-500);color:#fff;
-    font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
-  .badge.lite{background:var(--gray-100);color:var(--gray-600)}
-  .card.lvl-0{background:var(--red-100);border-color:var(--red-200);border-top-color:var(--red-500);width:200px}
-  .card.lvl-0 .n{font-size:14px}
-  .card.lvl-1{border-top-color:var(--red-300)}
-  .card.lvl-2{border-top-color:var(--red-200)}
-  .card.lvl-3,.card.lvl-4,.card.lvl-5,.card.lvl-6{border-top-color:var(--gray-200)}
-  .card.ceo{background:var(--red-700);border-color:var(--red-700);color:#fff;width:220px}
-  .card.ceo .n,.card.ceo .f,.card.ceo .t,.card.ceo .t b{color:#fff}
-  .card.ceo .badge{background:#fff;color:var(--red-700)}
-  .card.ceo .t{border-top-color:rgba(255,255,255,.3)}
-  .card.area-link{cursor:pointer}
-  .card.area-link:hover{box-shadow:0 0 0 2px var(--red-300)}
-  .card.hit,.member.hit{outline:3px solid #F2B705;outline-offset:2px}
+  .box{display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:nowrap}
+  .box span{overflow:hidden;text-overflow:ellipsis}
+  .box b{font-variant-numeric:tabular-nums}
+  .box.root{background:var(--ink);color:#fff;font-weight:700;font-size:15px;height:30px;padding:0 14px;min-width:240px}
+  .box.n1{background:var(--g-dark);color:#fff;font-weight:700;font-size:13.5px;height:26px;padding:0 10px;width:100%}
+  .cols{display:flex;gap:12px;margin-top:10px;align-self:stretch}
+  .col{width:220px}
+  .blk{position:relative;padding-left:14px;margin-top:12px}
+  .blk:first-child{margin-top:0}
+  .blk::before{content:"";position:absolute;left:0;top:13px;width:10px;border-top:1px solid var(--g-mid)}
+  .blk::after{content:"";position:absolute;left:0;top:-12px;bottom:0;border-left:1px solid var(--g-mid)}
+  .blk:first-child::after{top:-10px}
+  .blk:last-child::after{bottom:auto;height:25px}
+  .blk:first-child:last-child::after{height:23px}
+  .blk.direct::before{top:11px}
+  .box.sub{background:var(--g-light);color:var(--text);font-weight:700;font-size:12px;height:26px;padding:0 9px;margin-bottom:4px}
+  .box.sub.cont{background:var(--g-faint);color:var(--muted);font-weight:600}
+  .box.p{background:#fff;border:1px solid var(--line);font-size:11.5px;height:22px;padding:0 8px;margin-bottom:4px;margin-left:8px}
+  .blk.direct .box.p{margin-left:0}
+  .box.p b{font-weight:400;color:var(--muted);font-size:11px}
+  .box.p.temp span{color:var(--blue)}
+  .box.hit{outline:3px solid #F2B705;outline-offset:1px}
 
-  /* Mitarbeitende ohne eigene Reports: kompakte Liste statt vieler Kästchen */
-  .members{width:176px;background:var(--gray-25);border:1px solid var(--gray-200);border-radius:8px;padding:4px 0}
-  .member{padding:4px 10px;border-bottom:1px solid var(--gray-100)}
-  .member:last-child{border-bottom:0}
-  .member .n{font-size:12px;font-weight:600;color:var(--gray-800)}
-  .member .f{font-size:10.5px;color:var(--muted)}
-
-  /* Kompakt-Layout: tiefe Ebenen eingerückt untereinander statt nebeneinander */
-  .hnode{display:flex;flex-direction:column;align-items:flex-start}
-  .hang{display:flex;flex-direction:column;gap:8px;padding-top:8px;margin-left:16px}
-  .h-item{position:relative;padding-left:14px}
-  .h-item::before{content:"";position:absolute;left:0;top:20px;width:12px;border-top:1.5px solid var(--line)}
-  .h-item::after{content:"";position:absolute;left:0;top:-8px;bottom:0;border-left:1.5px solid var(--line)}
-  .h-item:last-child::after{bottom:auto;height:28px}
-
-  /* Übersicht: Kennzahlen der Bereiche */
-  .overview .card.lvl-0{width:224px}
-  .overview .card .t{gap:10px;white-space:nowrap}
+  /* ---------- Wasserfall ---------- */
+  .wf text{font-family:var(--font)}
 
   /* ---------- Druck / PDF ---------- */
   @media print{
     body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .toolbar,nav.jump,.warnings,.drop-hint{display:none !important}
     main{padding:0;gap:0;display:block}
-    .sheet{border:0;border-radius:0;box-shadow:none;padding:0;break-after:page;page-break-after:always;
+    .sheet{border:0;box-shadow:none;padding:0;break-after:page;page-break-after:always;
       height:var(--sheet-h);display:flex;flex-direction:column;overflow:hidden}
     .sheet:last-child{break-after:auto;page-break-after:auto}
-    .chart-wrap{overflow:visible;flex:1;display:flex;align-items:flex-start;justify-content:center;padding-top:10px}
-    .sheet-foot{display:flex;justify-content:space-between;font-size:9px;color:var(--gray-400);border-top:1px solid var(--gray-100);padding-top:4px}
-    .card,.members{box-shadow:none}
-    .card.hit,.member.hit{outline:0}
+    .chart-wrap{overflow:visible;flex:1;display:flex;align-items:flex-start;justify-content:center}
+    .sheet-foot{display:flex;justify-content:space-between;font-size:9px;color:var(--g-mid);border-top:1px solid var(--g-light);padding-top:4px}
+    .box.hit{outline:0}
   }
 </style>
 </head>
@@ -137,12 +116,14 @@
 
 <header class="toolbar">
   <h1>Organigramm</h1>
-  <span id="status" class="status demo">Demo-Daten (fiktiv)</span>
-  <label class="btn primary" title="Excel (.xlsx) oder CSV wählen – wird nur lokal im Browser gelesen">
-    Excel laden<input id="file" type="file" accept=".xlsx,.xls,.csv" hidden>
+  <span id="status" class="status demo">Testdaten (fiktiv)</span>
+  <label class="btn primary" title="Excel (.xlsx) wählen – wird nur lokal im Browser gelesen">
+    Excel laden<input id="file" type="file" accept=".xlsx,.xlsm,.xls,.csv" hidden>
   </label>
-  <button class="btn" id="template">Vorlage herunterladen</button>
-  <input id="search" type="search" placeholder="Name oder Funktion suchen …">
+  <button class="btn" id="template">Testdatei herunterladen</button>
+  <label class="opt" title="Aus welcher Spalte die grauen Org-Einheiten unter den Bereichen kommen">Unterebene
+    <select id="subcol"><option value="org2">Org-Einheit 2</option><option value="org3">Org-Einheit 3</option></select></label>
+  <input id="search" type="search" placeholder="Name suchen …">
   <span class="spacer"></span>
   <select id="format" title="Papierformat für Druck/PDF">
     <option value="A3">A3 quer</option>
@@ -154,182 +135,232 @@
 <div id="warnings"></div>
 <main id="main"></main>
 
-<!-- Fiktive Beispieldaten (werden von tools/beispieldaten_erzeugen.py ersetzt) -->
-<script>window.DEMO_DATA = /*DEMO-DATEN-START*/[{"ID": "P001", "Name": "Anna Albers", "Funktion": "Geschäftsführung", "Bereich": "Geschäftsführung", "Vorgesetzter": ""}, {"ID": "P002", "Name": "Ben Brandt", "Funktion": "Bereichsleitung Vertrieb", "Bereich": "Vertrieb", "Vorgesetzter": "P001"}, {"ID": "P003", "Name": "Clara Cordes", "Funktion": "Regionalleitung Nord", "Bereich": "Vertrieb", "Vorgesetzter": "P002"}, {"ID": "P004", "Name": "David Dietz", "Funktion": "Gebietsleitung Hamburg", "Bereich": "Vertrieb", "Vorgesetzter": "P003"}, {"ID": "P005", "Name": "Elif Engel", "Funktion": "Teamleitung Hamburg 1", "Bereich": "Vertrieb", "Vorgesetzter": "P004"}, {"ID": "P006", "Name": "Felix Fuchs", "Funktion": "Key Account Manager", "Bereich": "Vertrieb", "Vorgesetzter": "P005"}, {"ID": "P007", "Name": "Greta Graf", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P006"}, {"ID": "P008", "Name": "Hannes Hahn", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P006"}, {"ID": "P009", "Name": "Ida Imhof", "Funktion": "Key Account Manager", "Bereich": "Vertrieb", "Vorgesetzter": "P005"}, {"ID": "P010", "Name": "Jonas Jansen", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P009"}, {"ID": "P011", "Name": "Katrin Kraus", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P009"}, {"ID": "P012", "Name": "Lukas Lorenz", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P009"}, {"ID": "P013", "Name": "Mara Maier", "Funktion": "Teamleitung Hamburg 2", "Bereich": "Vertrieb", "Vorgesetzter": "P004"}, {"ID": "P014", "Name": "Niklas Nowak", "Funktion": "Key Account Manager", "Bereich": "Vertrieb", "Vorgesetzter": "P013"}, {"ID": "P015", "Name": "Olga Ott", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P014"}, {"ID": "P016", "Name": "Paul Peters", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P014"}, {"ID": "P017", "Name": "Rana Quast", "Funktion": "Gebietsleitung Berlin", "Bereich": "Vertrieb", "Vorgesetzter": "P003"}, {"ID": "P018", "Name": "Stefan Roth", "Funktion": "Teamleitung Berlin 1", "Bereich": "Vertrieb", "Vorgesetzter": "P017"}, {"ID": "P019", "Name": "Tina Seidel", "Funktion": "Key Account Manager", "Bereich": "Vertrieb", "Vorgesetzter": "P018"}, {"ID": "P020", "Name": "Uwe Thiel", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P019"}, {"ID": "P021", "Name": "Vera Ulrich", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P019"}, {"ID": "P022", "Name": "Wim Vogt", "Funktion": "Key Account Manager", "Bereich": "Vertrieb", "Vorgesetzter": "P018"}, {"ID": "P023", "Name": "Yasmin Weber", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P022"}, {"ID": "P024", "Name": "Zoe Yilmaz", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P022"}, {"ID": "P025", "Name": "Moritz Ziegler", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P022"}, {"ID": "P026", "Name": "Lea Berger", "Funktion": "Regionalleitung Süd", "Bereich": "Vertrieb", "Vorgesetzter": "P002"}, {"ID": "P027", "Name": "Tobias Kaiser", "Funktion": "Gebietsleitung München", "Bereich": "Vertrieb", "Vorgesetzter": "P026"}, {"ID": "P028", "Name": "Nora Lang", "Funktion": "Teamleitung München 1", "Bereich": "Vertrieb", "Vorgesetzter": "P027"}, {"ID": "P029", "Name": "Emil Möller", "Funktion": "Key Account Manager", "Bereich": "Vertrieb", "Vorgesetzter": "P028"}, {"ID": "P030", "Name": "Sophie Schulte", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P029"}, {"ID": "P031", "Name": "Anna Hoffmann", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P029"}, {"ID": "P032", "Name": "Ben Busch", "Funktion": "Key Account Manager", "Bereich": "Vertrieb", "Vorgesetzter": "P028"}, {"ID": "P033", "Name": "Clara Arnold", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P032"}, {"ID": "P034", "Name": "David Kuhn", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P032"}, {"ID": "P035", "Name": "Elif Winter", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P032"}, {"ID": "P036", "Name": "Felix Albers", "Funktion": "Teamleitung München 2", "Bereich": "Vertrieb", "Vorgesetzter": "P027"}, {"ID": "P037", "Name": "Greta Brandt", "Funktion": "Key Account Manager", "Bereich": "Vertrieb", "Vorgesetzter": "P036"}, {"ID": "P038", "Name": "Hannes Cordes", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P037"}, {"ID": "P039", "Name": "Ida Dietz", "Funktion": "Sales Representative", "Bereich": "Vertrieb", "Vorgesetzter": "P037"}, {"ID": "P040", "Name": "Jonas Engel", "Funktion": "Vertriebsassistenz", "Bereich": "Vertrieb", "Vorgesetzter": "P002"}, {"ID": "P041", "Name": "Katrin Fuchs", "Funktion": "Bereichsleitung Finanzen", "Bereich": "Finanzen", "Vorgesetzter": "P001"}, {"ID": "P042", "Name": "Lukas Graf", "Funktion": "Leitung Buchhaltung", "Bereich": "Finanzen", "Vorgesetzter": "P041"}, {"ID": "P043", "Name": "Mara Hahn", "Funktion": "Referent/in Buchhaltung", "Bereich": "Finanzen", "Vorgesetzter": "P042"}, {"ID": "P044", "Name": "Niklas Imhof", "Funktion": "Referent/in Buchhaltung", "Bereich": "Finanzen", "Vorgesetzter": "P042"}, {"ID": "P045", "Name": "Olga Jansen", "Funktion": "Referent/in Buchhaltung", "Bereich": "Finanzen", "Vorgesetzter": "P042"}, {"ID": "P046", "Name": "Paul Kraus", "Funktion": "Referent/in Buchhaltung", "Bereich": "Finanzen", "Vorgesetzter": "P042"}, {"ID": "P047", "Name": "Rana Lorenz", "Funktion": "Leitung Controlling", "Bereich": "Finanzen", "Vorgesetzter": "P041"}, {"ID": "P048", "Name": "Stefan Maier", "Funktion": "Referent/in Controlling", "Bereich": "Finanzen", "Vorgesetzter": "P047"}, {"ID": "P049", "Name": "Tina Nowak", "Funktion": "Referent/in Controlling", "Bereich": "Finanzen", "Vorgesetzter": "P047"}, {"ID": "P050", "Name": "Uwe Ott", "Funktion": "Referent/in Controlling", "Bereich": "Finanzen", "Vorgesetzter": "P047"}, {"ID": "P051", "Name": "Vera Peters", "Funktion": "Leitung Treasury", "Bereich": "Finanzen", "Vorgesetzter": "P041"}, {"ID": "P052", "Name": "Wim Quast", "Funktion": "Referent/in Treasury", "Bereich": "Finanzen", "Vorgesetzter": "P051"}, {"ID": "P053", "Name": "Yasmin Roth", "Funktion": "Referent/in Treasury", "Bereich": "Finanzen", "Vorgesetzter": "P051"}, {"ID": "P054", "Name": "Zoe Seidel", "Funktion": "CIO / Bereichsleitung IT", "Bereich": "IT", "Vorgesetzter": "P001"}, {"ID": "P055", "Name": "Moritz Thiel", "Funktion": "Leitung Infrastruktur", "Bereich": "IT", "Vorgesetzter": "P054"}, {"ID": "P056", "Name": "Lea Ulrich", "Funktion": "Teamleitung Netzwerk", "Bereich": "IT", "Vorgesetzter": "P055"}, {"ID": "P057", "Name": "Tobias Vogt", "Funktion": "Engineer Netzwerk", "Bereich": "IT", "Vorgesetzter": "P056"}, {"ID": "P058", "Name": "Nora Weber", "Funktion": "Engineer Netzwerk", "Bereich": "IT", "Vorgesetzter": "P056"}, {"ID": "P059", "Name": "Emil Yilmaz", "Funktion": "Engineer Netzwerk", "Bereich": "IT", "Vorgesetzter": "P056"}, {"ID": "P060", "Name": "Sophie Ziegler", "Funktion": "Teamleitung Service Desk", "Bereich": "IT", "Vorgesetzter": "P055"}, {"ID": "P061", "Name": "Anna Berger", "Funktion": "Engineer Service Desk", "Bereich": "IT", "Vorgesetzter": "P060"}, {"ID": "P062", "Name": "Ben Kaiser", "Funktion": "Engineer Service Desk", "Bereich": "IT", "Vorgesetzter": "P060"}, {"ID": "P063", "Name": "Clara Lang", "Funktion": "Engineer Service Desk", "Bereich": "IT", "Vorgesetzter": "P060"}, {"ID": "P064", "Name": "David Möller", "Funktion": "Engineer Service Desk", "Bereich": "IT", "Vorgesetzter": "P060"}, {"ID": "P065", "Name": "Elif Schulte", "Funktion": "Leitung Software", "Bereich": "IT", "Vorgesetzter": "P054"}, {"ID": "P066", "Name": "Felix Hoffmann", "Funktion": "Teamleitung Backend", "Bereich": "IT", "Vorgesetzter": "P065"}, {"ID": "P067", "Name": "Greta Busch", "Funktion": "Engineer Backend", "Bereich": "IT", "Vorgesetzter": "P066"}, {"ID": "P068", "Name": "Hannes Arnold", "Funktion": "Engineer Backend", "Bereich": "IT", "Vorgesetzter": "P066"}, {"ID": "P069", "Name": "Ida Kuhn", "Funktion": "Engineer Backend", "Bereich": "IT", "Vorgesetzter": "P066"}, {"ID": "P070", "Name": "Jonas Winter", "Funktion": "Teamleitung Frontend", "Bereich": "IT", "Vorgesetzter": "P065"}, {"ID": "P071", "Name": "Katrin Albers", "Funktion": "Engineer Frontend", "Bereich": "IT", "Vorgesetzter": "P070"}, {"ID": "P072", "Name": "Lukas Brandt", "Funktion": "Engineer Frontend", "Bereich": "IT", "Vorgesetzter": "P070"}, {"ID": "P073", "Name": "Mara Cordes", "Funktion": "Teamleitung Daten", "Bereich": "IT", "Vorgesetzter": "P065"}, {"ID": "P074", "Name": "Niklas Dietz", "Funktion": "Engineer Daten", "Bereich": "IT", "Vorgesetzter": "P073"}, {"ID": "P075", "Name": "Olga Engel", "Funktion": "Engineer Daten", "Bereich": "IT", "Vorgesetzter": "P073"}, {"ID": "P076", "Name": "Paul Fuchs", "Funktion": "IT-Sicherheitsbeauftragte/r", "Bereich": "IT", "Vorgesetzter": "P054"}, {"ID": "P077", "Name": "Rana Graf", "Funktion": "Bereichsleitung Personal", "Bereich": "Personal", "Vorgesetzter": "P001"}, {"ID": "P078", "Name": "Stefan Hahn", "Funktion": "HR Business Partner", "Bereich": "Personal", "Vorgesetzter": "P077"}, {"ID": "P079", "Name": "Tina Imhof", "Funktion": "HR Business Partner", "Bereich": "Personal", "Vorgesetzter": "P077"}, {"ID": "P080", "Name": "Uwe Jansen", "Funktion": "Recruiting", "Bereich": "Personal", "Vorgesetzter": "P077"}, {"ID": "P081", "Name": "Vera Kraus", "Funktion": "Lohn & Gehalt", "Bereich": "Personal", "Vorgesetzter": "P077"}, {"ID": "P082", "Name": "Wim Lorenz", "Funktion": "Personalentwicklung", "Bereich": "Personal", "Vorgesetzter": "P077"}, {"ID": "P083", "Name": "Yasmin Maier", "Funktion": "Bereichsleitung Produktion", "Bereich": "Produktion", "Vorgesetzter": "P001"}, {"ID": "P084", "Name": "Zoe Nowak", "Funktion": "Werksleitung Werk A", "Bereich": "Produktion", "Vorgesetzter": "P083"}, {"ID": "P085", "Name": "Moritz Ott", "Funktion": "Schichtleitung Früh (Werk A)", "Bereich": "Produktion", "Vorgesetzter": "P084"}, {"ID": "P086", "Name": "Lea Peters", "Funktion": "Meister/in Linie 1", "Bereich": "Produktion", "Vorgesetzter": "P085"}, {"ID": "P087", "Name": "Tobias Quast", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P086"}, {"ID": "P088", "Name": "Nora Roth", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P086"}, {"ID": "P089", "Name": "Emil Seidel", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P086"}, {"ID": "P090", "Name": "Sophie Thiel", "Funktion": "Meister/in Linie 2", "Bereich": "Produktion", "Vorgesetzter": "P085"}, {"ID": "P091", "Name": "Anna Ulrich", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P090"}, {"ID": "P092", "Name": "Ben Vogt", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P090"}, {"ID": "P093", "Name": "Clara Weber", "Funktion": "Schichtleitung Spät (Werk A)", "Bereich": "Produktion", "Vorgesetzter": "P084"}, {"ID": "P094", "Name": "David Yilmaz", "Funktion": "Meister/in Linie 1", "Bereich": "Produktion", "Vorgesetzter": "P093"}, {"ID": "P095", "Name": "Elif Ziegler", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P094"}, {"ID": "P096", "Name": "Felix Berger", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P094"}, {"ID": "P097", "Name": "Greta Kaiser", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P094"}, {"ID": "P098", "Name": "Hannes Lang", "Funktion": "Meister/in Linie 2", "Bereich": "Produktion", "Vorgesetzter": "P093"}, {"ID": "P099", "Name": "Ida Möller", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P098"}, {"ID": "P100", "Name": "Jonas Schulte", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P098"}, {"ID": "P101", "Name": "Katrin Hoffmann", "Funktion": "Qualitätssicherung Werk A", "Bereich": "Produktion", "Vorgesetzter": "P084"}, {"ID": "P102", "Name": "Lukas Busch", "Funktion": "Werksleitung Werk B", "Bereich": "Produktion", "Vorgesetzter": "P083"}, {"ID": "P103", "Name": "Mara Arnold", "Funktion": "Schichtleitung Tag (Werk B)", "Bereich": "Produktion", "Vorgesetzter": "P102"}, {"ID": "P104", "Name": "Niklas Kuhn", "Funktion": "Meister/in Linie 1", "Bereich": "Produktion", "Vorgesetzter": "P103"}, {"ID": "P105", "Name": "Olga Winter", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P104"}, {"ID": "P106", "Name": "Paul Albers", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P104"}, {"ID": "P107", "Name": "Rana Brandt", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P104"}, {"ID": "P108", "Name": "Stefan Cordes", "Funktion": "Meister/in Linie 2", "Bereich": "Produktion", "Vorgesetzter": "P103"}, {"ID": "P109", "Name": "Tina Dietz", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P108"}, {"ID": "P110", "Name": "Uwe Engel", "Funktion": "Fachkraft Produktion", "Bereich": "Produktion", "Vorgesetzter": "P108"}, {"ID": "P111", "Name": "Vera Fuchs", "Funktion": "Qualitätssicherung Werk B", "Bereich": "Produktion", "Vorgesetzter": "P102"}]/*DEMO-DATEN-ENDE*/;</script>
+<!-- Fiktive Testdaten (werden von tools/beispieldaten_erzeugen.py ersetzt) -->
+<script>window.DEMO_DATA = /*DEMO-DATEN-START*/[{"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Ben Brandt", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Physiotherapie", "Org-Einheit 3": "", "Mitarbeitername": "Clara Cordes", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Ben Brandt", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Physiotherapie", "Org-Einheit 3": "", "Mitarbeitername": "David Dietz", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Ben Brandt", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Physiotherapie", "Org-Einheit 3": "", "Mitarbeitername": "Elif Engel", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Ben Brandt", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Physiotherapie", "Org-Einheit 3": "", "Mitarbeitername": "Felix Fuchs", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Greta Graf", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Ernährung", "Org-Einheit 3": "", "Mitarbeitername": "Hannes Hahn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Greta Graf", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Ernährung", "Org-Einheit 3": "", "Mitarbeitername": "Ida Imhof", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Greta Graf", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Ernährung", "Org-Einheit 3": "", "Mitarbeitername": "Jonas Jansen", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Greta Graf", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Ernährung", "Org-Einheit 3": "", "Mitarbeitername": "Katrin Kraus", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Lukas Lorenz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Rehabilitation", "Org-Einheit 3": "", "Mitarbeitername": "Mara Maier", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Lukas Lorenz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Rehabilitation", "Org-Einheit 3": "", "Mitarbeitername": "Niklas Nowak", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Olga Ott", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Wissenschaftl. Abteilung", "Org-Einheit 3": "", "Mitarbeitername": "Paul Peters", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Olga Ott", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Wissenschaftl. Abteilung", "Org-Einheit 3": "", "Mitarbeitername": "Rana Quast", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Olga Ott", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Wissenschaftl. Abteilung", "Org-Einheit 3": "", "Mitarbeitername": "Stefan Roth", "Summe von FTE": 0.75, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Tina Seidel", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Mannschaftsärzte", "Org-Einheit 3": "", "Mitarbeitername": "Uwe Thiel", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Tina Seidel", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Mannschaftsärzte", "Org-Einheit 3": "", "Mitarbeitername": "Vera Ulrich", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Wim Vogt", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Yasmin Weber", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Sportliche Leitung", "Org-Einheit 3": "", "Mitarbeitername": "Moritz Ziegler", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Sportliche Leitung", "Org-Einheit 3": "", "Mitarbeitername": "Lea Berger", "Summe von FTE": 0.5, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Nora Lang", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Emil Möller", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Sophie Schulte", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Jan Hoffmann", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Mia Busch", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Tim Arnold", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Sara Kuhn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Leon Winter", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Julia Becker", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Max Albers", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Hanna Brandt", "Summe von FTE": 0.75, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Erik Cordes", "Summe von FTE": 0.5, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Kai Engel", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Anna Fuchs", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Ben Graf", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Clara Hahn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "David Imhof", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Elif Jansen", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Felix Kraus", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Greta Lorenz", "Summe von FTE": 0.75, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Hannes Maier", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Analyse & Technologie", "Org-Einheit 3": "", "Mitarbeitername": "Ida Nowak", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Hannes Maier", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Analyse & Technologie", "Org-Einheit 3": "", "Mitarbeitername": "Jonas Ott", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Katrin Peters", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Video & Spielanalyse", "Org-Einheit 3": "", "Mitarbeitername": "Lukas Quast", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Katrin Peters", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Video & Spielanalyse", "Org-Einheit 3": "", "Mitarbeitername": "Mara Roth", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Katrin Peters", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Video & Spielanalyse", "Org-Einheit 3": "", "Mitarbeitername": "Niklas Seidel", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Katrin Peters", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Video & Spielanalyse", "Org-Einheit 3": "", "Mitarbeitername": "Olga Thiel", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Rana Vogt", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Stefan Weber", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Tina Yilmaz", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Uwe Ziegler", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Vera Berger", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Wim Kaiser", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Yasmin Lang", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Zoe Möller", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Moritz Schulte", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Lea Hoffmann", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Tobias Busch", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Nora Arnold", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Emil Kuhn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Sophie Winter", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Jan Becker", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Mia Albers", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Tim Brandt", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Sara Cordes", "Summe von FTE": 0.75, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Leon Dietz", "Summe von FTE": 0.5, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Julia Engel", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Max Fuchs", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Hanna Graf", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Referent Sport-VS", "Org-Einheit 3": "", "Mitarbeitername": "Erik Hahn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Referent Sport-VS"}, {"N-1 (Person)": "Hanna Graf", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Referent Sport-VS", "Org-Einheit 3": "", "Mitarbeitername": "Laura Imhof", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Referent Sport-VS"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - EFI", "Org-Einheit 3": "", "Mitarbeitername": "Anna Kraus", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - EFI", "Org-Einheit 3": "", "Mitarbeitername": "Ben Lorenz", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - EFI", "Org-Einheit 3": "", "Mitarbeitername": "Clara Maier", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "David Nowak", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Elif Ott", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Felix Peters", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "EFI"}]/*DEMO-DATEN-ENDE*/;</script>
 <script>
 (() => {
   "use strict";
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const COMPANY = "Musterfirma GmbH";
   const PAPER = { A3:{w:420,h:297}, A4:{w:297,h:210} };
   const MARGIN_MM = 10, MM = 96/25.4;
-  let currentSource = "Demo-Daten (fiktiv)";
-
-  /* ---------- Spalten erkennen (tolerant gegenüber Schreibweisen) ---------- */
-  const ALIASES = {
-    id:["id","personalnummer","pers.-nr.","persnr","nr"],
-    name:["name","mitarbeiter","mitarbeiter/in","person"],
-    funktion:["funktion","position","rolle","titel","stelle","jobtitel"],
-    bereich:["bereich","abteilung","department","ressort"],
-    chef:["vorgesetzter","vorgesetzte","vorgesetzter_id","vorgesetzte/r","führungskraft","manager","berichtet an","reports to"]
+  const HEADER = ["N-1 (Person)","N-2 (Person)","N-3 (Person)","Org-Einheit 1","Org-Einheit 2","Org-Einheit 3",
+                  "Mitarbeitername","Summe von FTE","Personalfall","Organigramm final"];
+  const TEMP_RE = /prakti|aushilf/i;            // Praktikant/innen & Aushilfen -> blau
+  const MODES = {
+    fte:  {key:"fte",  unit:"FTE",   title:"FTE insgesamt",   fmt: v => fmtNum(v)},
+    kopf: {key:"kopf", unit:"Köpfe", title:"Köpfe insgesamt", fmt: v => String(v)}
   };
-  function normalizeRows(raw){
-    if(!raw.length) return [];
-    const keys = Object.keys(raw[0]);
-    const map = {};
-    for(const [k, al] of Object.entries(ALIASES)){
-      map[k] = keys.find(h => al.includes(h.trim().toLowerCase()));
-    }
-    return raw.map(r => ({
-      id: String(r[map.id] ?? "").trim(),
-      name: String(r[map.name] ?? "").trim(),
-      funktion: String(r[map.funktion] ?? "").trim(),
-      bereich: String(r[map.bereich] ?? "").trim(),
-      chef: String(r[map.chef] ?? "").trim()
-    })).filter(r => r.id || r.name);
-  }
+  const fmtNum = (v, fixed) => v.toLocaleString("de-DE", fixed ? {minimumFractionDigits:2, maximumFractionDigits:2} : {maximumFractionDigits:2});
+  let rawRows = [], sourceName = "Testdaten (fiktiv)";
 
-  /* ---------- Baum aufbauen + prüfen ---------- */
-  function buildTree(rows){
-    const warn = [];
-    const byId = new Map(), byName = new Map();
-    rows.forEach((r, i) => {
-      if(!r.id){ r.id = "#" + (i + 2); }
-      if(byId.has(r.id)) warn.push(`Doppelte ID „${r.id}“ (Zeile ${i + 2}) – zweiter Eintrag wird ignoriert.`);
-      else byId.set(r.id, {...r, kids:[], order:i});
-      if(r.name){ byName.has(r.name) ? byName.set(r.name, null) : byName.set(r.name, r.id); }
+  /* ---------- Excel einlesen: Kopfzeile suchen, Spalten zuordnen ---------- */
+  const norm = s => String(s ?? "").toLowerCase().replace(/\s+/g, " ").trim();
+  const MATCH = {
+    n1: h => /^n\s*-\s*1\b/.test(h), n2: h => /^n\s*-\s*2\b/.test(h), n3: h => /^n\s*-\s*3\b/.test(h),
+    org1: h => /org.*einheit\s*1/.test(h), org2: h => /org.*einheit\s*2/.test(h), org3: h => /org.*einheit\s*3/.test(h),
+    name: h => h.includes("mitarbeiter") || h === "name",
+    fte: h => /\bfte\b/.test(h), pf: h => h.includes("personalfall"), final: h => h.includes("organigramm")
+  };
+  function rowsFromAoa(aoa){
+    const hr = aoa.findIndex(r => r.some(c => MATCH.name(norm(c))) && r.some(c => MATCH.final(norm(c))));
+    if(hr < 0) return null;
+    const head = aoa[hr].map(norm), idx = {};
+    for(const [k, f] of Object.entries(MATCH)) idx[k] = head.findIndex(f);
+    const get = (r, k) => idx[k] >= 0 ? r[idx[k]] : "";
+    return aoa.slice(hr + 1).map((r, i) => {
+      const o = {line: hr + i + 2};
+      for(const k of Object.keys(MATCH)) o[k] = typeof get(r,k) === "number" ? get(r,k) : String(get(r,k) ?? "").trim();
+      return o;
     });
-    const roots = [];
-    for(const p of byId.values()){
-      if(!p.chef){ roots.push(p); continue; }
-      let boss = byId.get(p.chef);
-      if(!boss && byName.get(p.chef)) boss = byId.get(byName.get(p.chef));
-      if(!boss){
-        warn.push(`${p.name || p.id}: Vorgesetzte/r „${p.chef}“ nicht gefunden${byName.get(p.chef) === null ? " (Name mehrdeutig – bitte ID verwenden)" : ""}.`);
-        roots.push(p); continue;
-      }
-      if(boss === p){ warn.push(`${p.name}: ist als eigene/r Vorgesetzte/r eingetragen.`); roots.push(p); continue; }
-      p.parent = boss; boss.kids.push(p);
-    }
-    // Zyklen erkennen
-    for(const p of byId.values()){
-      const seen = new Set(); let c = p;
-      while(c.parent){ if(seen.has(c)){ warn.push(`Zirkelbezug bei ${p.name || p.id}.`); c.parent.kids = c.parent.kids.filter(k => k !== c); roots.push(c); delete c.parent; break; } seen.add(c); c = c.parent; }
-    }
-    let root;
-    if(roots.length === 1) root = roots[0];
-    else {
-      if(roots.length > 1) warn.push(`${roots.length} Personen ohne (gültige) Vorgesetzte – sie werden unter einer gemeinsamen Spitze gezeigt.`);
-      root = {id:"__root", name:COMPANY, funktion:"", bereich:"", kids:roots, virtual:true};
-      roots.forEach(r => r.parent = root);
-    }
-    const walk = (n, d) => { n.depth = d; n.kids.sort((a,b) => a.order - b.order); n.total = 0; n.maxDepth = d;
-      for(const k of n.kids){ walk(k, d + 1); n.total += 1 + k.total; n.maxDepth = Math.max(n.maxDepth, k.maxDepth); } };
-    walk(root, 0);
-    return {root, warn, count: byId.size};
   }
+  const demoAoa = () => [HEADER, ...(window.DEMO_DATA || []).map(o => HEADER.map(h => o[h] ?? ""))];
 
-  /* ---------- Rendering ---------- */
-  function card(n, lvl, extraCls = ""){
-    const direct = n.kids.length;
-    const badge = direct ? `<span class="badge" title="${direct} direkte Reports">${direct}</span>` : "";
-    const foot = direct ? `<div class="t"><span>Direkt <b>${direct}</b></span><span>Team gesamt <b>${n.total}</b></span></div>` : "";
-    return `<div class="card lvl-${Math.min(lvl,6)} ${extraCls}" data-s="${esc((n.name + " " + n.funktion).toLowerCase())}">
-      ${badge}<div class="n">${esc(n.name)}</div><div class="f">${esc(n.funktion)}</div>${foot}</div>`;
-  }
-  function membersBox(list){
-    return `<div class="members">${list.map(m =>
-      `<div class="member" data-s="${esc((m.name + " " + m.funktion).toLowerCase())}"><div class="n">${esc(m.name)}</div><div class="f">${esc(m.funktion)}</div></div>`).join("")}</div>`;
-  }
-  // Kinder ohne eigene Reports werden zu einer kompakten Liste gebündelt -> Diagramm bleibt schmal.
-  // Ab Ebene `hangFrom` werden Unterbäume eingerückt untereinander gezeigt (für breite/tiefe Bereiche).
-  function subtree(n, lvl, hangFrom = Infinity){
-    if(!n.kids.length) return card(n, lvl);
-    const leaves = n.kids.filter(k => !k.kids.length), branches = n.kids.filter(k => k.kids.length);
-    if(lvl >= hangFrom){
-      const items = branches.map(b => `<div class="h-item">${subtree(b, lvl + 1, hangFrom)}</div>`);
-      if(leaves.length) items.unshift(`<div class="h-item">${membersBox(leaves)}</div>`);
-      return `<div class="hnode">${card(n, lvl)}<div class="hang">${items.join("")}</div></div>`;
+  /* ---------- Datenmodell: Einheit (Org-Einheit 1) > Bereich (Organigramm final) > Org-Einheit > Person ---------- */
+  function buildModel(rows){
+    const warn = [], units = new Map(), seen = new Map();
+    const subCol = $("#subcol").value;
+    let lastOrg1 = "";
+    for(const r of rows){
+      const name = String(r.name);
+      if(!name || /ergebnis|gesamt|^total|grand total/i.test(name)) continue;   // Pivot-Summenzeilen überspringen
+      const org1 = String(r.org1) || lastOrg1; lastOrg1 = org1;
+      const unitName = (org1.split(" / ")[0] || "Organisation").trim();
+      let fte = typeof r.fte === "number" ? r.fte : parseFloat(String(r.fte).replace(",", "."));
+      if(isNaN(fte)){ fte = 0; warn.push(`${name} (Zeile ${r.line}): keine FTE-Angabe – als 0 gezählt.`); }
+      let area = String(r.final);
+      if(!area){ area = "Ohne Zuordnung"; warn.push(`${name} (Zeile ${r.line}): „Organigramm final“ ist leer.`); }
+      const temp = TEMP_RE.test(`${r.org2} ${r.org3} ${r.pf}`);
+      let sub = shortUnit(String(r[subCol]));
+      if(!sub || TEMP_RE.test(sub) || sub.toLowerCase() === area.toLowerCase()) sub = "";   // direkt unter dem Bereich
+
+      if(!units.has(unitName)) units.set(unitName, {name:unitName, areas:new Map(), fte:0, kopf:0});
+      const u = units.get(unitName);
+      if(!u.areas.has(area)) u.areas.set(area, {name:area, subs:new Map([["", []]]), fte:0, kopf:0});
+      const a = u.areas.get(area);
+      if(!a.subs.has(sub)) a.subs.set(sub, []);
+      a.subs.get(sub).push({name, fte, temp});
+      a.fte += fte; a.kopf += 1; u.fte += fte; u.kopf += 1;
+      const key = unitName + "|" + name;
+      if(seen.has(key) && seen.get(key) !== area) warn.push(`${name} steht in mehreren Bereichen (${seen.get(key)} / ${area}) und wird bei den Köpfen doppelt gezählt.`);
+      seen.set(key, area);
     }
-    const items = branches.map(b => `<li>${subtree(b, lvl + 1, hangFrom)}</li>`);
-    if(leaves.length) items.unshift(`<li>${membersBox(leaves)}</li>`);
-    return `${card(n, lvl)}<ul>${items.join("")}</ul>`;
+    return {units:[...units.values()], warn};
   }
-  // Wählt je Blatt das Layout, das auf dem gewählten Papierformat am größten gedruckt werden kann:
-  // k = ab welcher Ebene (relativ zur Bereichsleitung) eingerückt statt verzweigt wird.
-  function chooseLayouts(){
+  const shortUnit = s => { const p = s.split(/\s[-–]\s/); return (p.length > 1 ? p.slice(1).join(" - ") : s).trim(); };
+
+  /* ---------- Layout: Org-Einheiten je Bereich auf Spalten verteilen (passend zum Papierformat) ---------- */
+  const COL_W = 232, AREA_PAD = 28, SUB_H = 30, P_H = 26, BLK_GAP = 12, TOP_H = 30 + 22 + 22 + 26 + 10;
+  function blocksOf(area){
+    return [...area.subs].filter(([, ps]) => ps.length).map(([sub, ps]) => ({sub, persons:ps}));
+  }
+  function pack(blocks, maxH){
+    const cols = [[]]; let h = 0;
+    const bh = b => (b.sub ? SUB_H : 0) + b.persons.length * P_H;
+    for(let b of blocks){
+      while(b){
+        const gap = cols.at(-1).length ? BLK_GAP : 0;
+        if(h + gap + bh(b) <= maxH){ cols.at(-1).push(b); h += gap + bh(b); b = null; continue; }
+        // Einheiten nur aufteilen, wenn sie auch in eine leere Spalte nicht passen
+        const room = Math.floor((maxH - h - gap - (b.sub ? SUB_H : 0)) / P_H);
+        if(bh(b) > maxH && room >= 3){
+          cols.at(-1).push({...b, persons:b.persons.slice(0, room)});
+          b = {...b, cont:true, persons:b.persons.slice(room)};
+        } else if(!cols.at(-1).length){
+          const n = Math.max(1, Math.floor((maxH - (b.sub ? SUB_H : 0)) / P_H));
+          cols.at(-1).push({...b, persons:b.persons.slice(0, n)});
+          b = b.persons.length > n ? {...b, cont:true, persons:b.persons.slice(n)} : null;
+        }
+        cols.push([]); h = 0;
+      }
+    }
+    return cols.filter(c => c.length);
+  }
+  function chooseLayout(unit){
     const [w, h] = printArea();
-    document.querySelectorAll(".sheet[data-sheet]").forEach(s => {
-      const {build, depth} = SHEETS[+s.dataset.sheet], c = s.querySelector(".chart");
-      let best = null;
-      for(let k = depth + 1; k >= 1; k--){
-        c.innerHTML = build(k);
-        const z = Math.min(w / c.scrollWidth, (h - 120) / c.scrollHeight);
-        if(!best || z > best.z * 1.08) best = {k, z};
-      }
-      c.innerHTML = build(best.k);
-    });
-    applySearch();
+    const areas = [...unit.areas.values()].map(a => ({a, blocks:blocksOf(a)}));
+    const full = Math.max(...areas.map(x => x.blocks.reduce((s, b) => s + (b.sub ? SUB_H : 0) + b.persons.length * P_H + BLK_GAP, 0)));
+    let best = null;
+    for(let maxH = SUB_H + 3 * P_H; maxH <= full + P_H; maxH += P_H){
+      const packed = areas.map(x => pack(x.blocks, maxH));
+      const width = packed.reduce((s, c) => s + Math.max(1, c.length) * COL_W + AREA_PAD, 0);
+      const height = TOP_H + Math.max(...packed.map(c => Math.max(0, ...c.map(col => col.reduce((s, b, i) => s + (i ? BLK_GAP : 0) + (b.sub ? SUB_H : 0) + b.persons.length * P_H, 0)))));
+      const z = Math.min(w / width, (h - 150) / height);
+      if(!best || z > best.z * 1.02) best = {z, packed};
+    }
+    return areas.map((x, i) => ({area:x.a, cols:best.packed[i]}));
   }
   function printArea(){
     const p = PAPER[$("#format").value];
     return [(p.w - 2*MARGIN_MM) * MM, (p.h - 2*MARGIN_MM) * MM];
   }
-  let SHEETS = [];
-  function sheet({id, sheetNo, kicker, title, facts, legend = true}){
-    return `<section class="sheet" id="${id}" data-sheet="${sheetNo}">
-      <div class="sheet-head"><div><div class="kicker">${esc(kicker)}</div><h2>${esc(title)}</h2></div>
-        <div class="facts">${facts.map(([l,v]) => `<div><b>${v}</b>${esc(l)}</div>`).join("")}</div></div>
-      ${legend ? `<div class="legend"><span><span class="badge">3</span> direkte Reports</span><span>„Team gesamt“ = alle Personen darunter</span><span>Graue Liste = Mitarbeitende ohne eigene Führungsverantwortung</span></div>` : ""}
-      <div class="chart-wrap"><div class="chart tree"></div></div>
-      <div class="sheet-foot"><span>${esc(COMPANY)} · Organigramm · ${esc(title)}</span><span>Stand ${new Date().toLocaleDateString("de-DE")}</span></div>
+
+  /* ---------- Rendering ---------- */
+  function orgChart(unit, layout, mode){
+    const v = x => mode.fmt(x[mode.key]);
+    const person = p => `<div class="box p${p.temp ? " temp" : ""}" data-s="${esc(p.name.toLowerCase())}"><span>${esc(p.name)}</span>${mode.key === "fte" ? `<b>${fmtNum(p.fte)}</b>` : ""}</div>`;
+    const subVal = ps => mode.key === "fte" ? fmtNum(ps.reduce((s, p) => s + p.fte, 0)) : String(ps.length);
+    const block = (b, area) => {
+      const all = area.subs.get(b.sub);
+      const head = b.sub ? `<div class="box sub${b.cont ? " cont" : ""}"><span>${esc(b.sub)}${b.cont ? " (Forts.)" : ""}</span>${b.cont ? "" : `<b>${subVal(all)}</b>`}</div>` : "";
+      return `<div class="blk${b.sub ? "" : " direct"}">${head}${b.persons.map(person).join("")}</div>`;
+    };
+    const areas = layout.map(({area, cols}) => `<li><div style="width:${Math.max(1, cols.length) * COL_W - 12}px;display:flex;flex-direction:column">
+        <div class="box n1"><span>${esc(area.name)}</span><b>${v(area)}</b></div>
+        <div class="cols">${cols.map(col => `<div class="col">${col.map(b => block(b, area)).join("")}</div>`).join("")}</div>
+      </div></li>`).join("");
+    return `<ul><li><div class="box root"><span>${esc(unit.name)}</span><b>${v(unit)}</b></div><ul>${areas}</ul></li></ul>`;
+  }
+
+  function waterfall(unit){
+    const areas = [...unit.areas.values()];
+    const labelW = 230, panelW = 470, gap = 70, rowH = 84, barH = 44, top = 80;
+    const H = top + (areas.length + 1) * rowH + 10, W = labelW + 2 * panelW + gap;
+    const rows = [...areas.map(a => ({name:a.name, fte:a.fte, kopf:a.kopf})), {name:"Gesamt", fte:unit.fte, kopf:unit.kopf, total:true}];
+    let svg = "";
+    rows.forEach((r, i) => {
+      const y = top + i * rowH + (rowH - barH) / 2 + barH / 2 + 5;
+      svg += `<text x="${labelW - 18}" y="${y}" text-anchor="end" font-size="16" ${r.total ? 'font-weight="700"' : ""} fill="#1F1F1F">${esc(r.name)}</text>`;
+    });
+    [["fte", "In FTE", v => fmtNum(v, true)], ["kopf", "In Köpfen", v => String(v)]].forEach(([k, title, f], pi) => {
+      const x0 = labelW + pi * (panelW + gap), s = (panelW - 80) / (unit[k] || 1);
+      svg += `<text x="${x0}" y="30" font-size="17" font-weight="700" fill="#111">${title}</text>
+              <line x1="${x0}" x2="${x0 + panelW - 30}" y1="46" y2="46" stroke="#111" stroke-width="1"/>
+              <line x1="${x0}" x2="${x0}" y1="${top - 6}" y2="${H - 4}" stroke="#111" stroke-width="1"/>`;
+      let cum = 0;
+      rows.forEach((r, i) => {
+        const val = r[k], y = top + i * rowH + (rowH - barH) / 2;
+        const start = r.total ? 0 : cum, x = x0 + start * s, bw = Math.max(val * s, 2);
+        svg += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}" fill="${r.total ? "#111" : "#7F7F7F"}"/>`;
+        const label = f(val), tw = label.length * 8.6;
+        svg += bw >= tw + 16 && !r.total
+          ? `<text x="${x + bw / 2}" y="${y + barH / 2 + 5.5}" text-anchor="middle" font-size="15" fill="#fff">${label}</text>`
+          : `<text x="${x + bw + 7}" y="${y + barH / 2 + 5.5}" font-size="15" ${r.total ? 'font-weight="700"' : ""} fill="#111">${label}</text>`;
+        if(!r.total){
+          cum += val;
+          const xe = x0 + cum * s;
+          svg += `<line x1="${xe}" x2="${xe}" y1="${y + barH}" y2="${y + rowH}" stroke="#111" stroke-width="1" stroke-dasharray="2 2"/>`;
+        }
+      });
+    });
+    return `<svg class="wf" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Aufbau nach Bereichen in FTE und Köpfen">${svg}</svg>`;
+  }
+
+  function legend(mode){
+    const u = mode.unit;
+    return `<div class="legend">
+      <span class="chip k">N</span><span>= ${u} gesamt</span>
+      <span class="chip d">N</span><span>= ${u} je Bereich (N-1, summiert)</span>
+      <span class="chip l">N</span><span>= ${u} je Org-Einheit</span>
+      <span class="chip p">Name</span><span>= Mitarbeiter/in</span>
+      <span class="chip b">Name</span><span>= Praktikant/in / Aushilfe</span></div>`;
+  }
+  function sheet({id, unit, title, sub, legendHtml = "", chart, wide = false}){
+    const date = new Date().toLocaleDateString("de-DE");
+    return `<section class="sheet${wide ? " wf-sheet" : ""}" id="${id}">
+      <div class="sheet-head"><div><h2><span class="unit">${esc(unit.name)}</span> | ${esc(title)}</h2>
+        <div class="sub"><div>${esc(sub)}</div><div>Stand ${date} · Quelle: ${esc(sourceName)}</div></div></div>${legendHtml}</div>
+      <div class="chart-wrap"><div class="chart">${chart}</div></div>
+      <div class="sheet-foot"><span>${esc(unit.name)} · ${esc(sub)}</span><span>Stand ${date}</span></div>
     </section>`;
   }
 
-  function render(rows){
-    const {root, warn, count} = buildTree(normalizeRows(rows));
-    const areas = root.kids.filter(k => k.kids.length);
-    const staff = root.kids.filter(k => !k.kids.length);
-    const areaName = a => a.bereich || a.funktion || a.name;
-
-    const levels = a => a.maxDepth - a.depth + 1;
-
-    // Übersicht: gesamte Organisation mit allen Ebenen und Verzweigungen
-    const top = root.virtual ? `<div class="card ceo"><div class="n">${esc(root.name)}</div></div>` : card(root, 0, "ceo");
-    SHEETS = [{depth: Math.max(1, ...areas.map(levels)) - 1, build: k => {
-      const items = areas.map(a => `<li>${subtree(a, 0, k)}</li>`);
-      if(staff.length) items.unshift(`<li>${membersBox(staff)}</li>`);
-      return `<ul><li>${top}<ul>${items.join("")}</ul></li></ul>`;
-    }}];
-    let html = sheet({id:"uebersicht", sheetNo:0, kicker:"Übersicht · alle Ebenen", title:COMPANY,
-      facts:[["Personen", count], ["Bereiche", areas.length], ["Ebenen max.", root.maxDepth + 1]]});
-
-    // Eine Seite pro Bereich
-    areas.forEach((a, i) => {
-      SHEETS.push({depth: levels(a) - 1, build: k => `<ul><li>${subtree(a, 0, k)}</li></ul>`});
-      html += sheet({id:"b" + i, sheetNo:i + 1, kicker:"Bereich", title:areaName(a),
-        facts:[["Personen", a.total + 1], ["Führungskräfte", countLeaders(a)], ["Ebenen", levels(a)]]});
+  function render(){
+    const {units, warn} = buildModel(rawRows);
+    let html = "", nav = "";
+    units.forEach((u, ui) => {
+      const layout = chooseLayout(u);
+      for(const mode of [MODES.fte, MODES.kopf]){
+        const id = `u${ui}-${mode.key}`;
+        html += sheet({id, unit:u, title:`${mode.fmt(u[mode.key])} ${mode.title}`, sub:`Organigramm · Darstellung in ${mode.unit}`,
+          legendHtml:legend(mode), chart:`<div class="tree">${orgChart(u, layout, mode)}</div>`});
+        nav += `<a href="#${id}">${esc(u.name)} · ${mode.unit}</a>`;
+      }
+      html += sheet({id:`u${ui}-wf`, unit:u, title:"Aufbau nach Bereichen", sub:"FTE und Köpfe je Bereich (N-1)", chart:waterfall(u), wide:true});
+      nav += `<a href="#u${ui}-wf">${esc(u.name)} · Aufbau</a>`;
     });
+    if(!units.length) html = `<section class="sheet"><p>Keine Personen gefunden. Erwartet wird eine Kopfzeile mit „Mitarbeitername“ und „Organigramm final“.</p></section>`;
     $("#main").innerHTML = html;
-    $("#jump").innerHTML = `<a href="#uebersicht">Übersicht</a>` + areas.map((a,i) => `<a href="#b${i}">${esc(areaName(a))}</a>`).join("");
+    $("#jump").innerHTML = nav;
     $("#warnings").innerHTML = warn.length ? `<div class="warnings"><b>Hinweise zur Datei (${warn.length})</b><ul>${warn.slice(0,20).map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : "";
-    chooseLayouts();
+    applySearch();
   }
-  const countLeaders = n => (n.kids.length ? 1 : 0) + n.kids.reduce((s,k) => s + countLeaders(k), 0);
 
   /* ---------- Datei laden (nur lokal) ---------- */
   function loadFile(file){
     if(!file) return;
-    if(typeof XLSX === "undefined"){ alert("Excel-Bibliothek fehlt in dieser Datei."); return; }
     const reader = new FileReader();
     reader.onload = e => {
       try{
         const wb = XLSX.read(new Uint8Array(e.target.result), {type:"array"});
-        const name = wb.SheetNames.includes("Daten") ? "Daten" : wb.SheetNames[0];
-        const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], {defval:"", raw:false});
-        render(rows);
-        currentSource = file.name;
+        let rows = null;
+        for(const n of wb.SheetNames){
+          rows = rowsFromAoa(XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:"", raw:true}));
+          if(rows) break;
+        }
+        if(!rows){ alert("Keine passende Tabelle gefunden – benötigt werden die Spalten „Mitarbeitername“ und „Organigramm final“."); return; }
+        rawRows = rows; sourceName = file.name;
+        render();
         const s = $("#status"); s.textContent = `${file.name} · lokal geladen`; s.classList.remove("demo");
       }catch(err){ alert("Datei konnte nicht gelesen werden: " + err.message); }
     };
@@ -340,23 +371,11 @@
   addEventListener("dragleave", e => { if(!e.relatedTarget) document.body.classList.remove("dragging"); });
   addEventListener("drop", e => { e.preventDefault(); document.body.classList.remove("dragging"); loadFile(e.dataTransfer.files[0]); });
 
-  /* ---------- Excel-Vorlage erzeugen (mit den fiktiven Beispieldaten) ---------- */
   $("#template").addEventListener("click", () => {
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(window.DEMO_DATA, {header:["ID","Name","Funktion","Bereich","Vorgesetzter"]});
-    ws["!cols"] = [{wch:9},{wch:24},{wch:36},{wch:20},{wch:16}];
+    const wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(demoAoa());
+    ws["!cols"] = [18,18,18,30,36,20,22,14,13,24].map(wch => ({wch}));
     XLSX.utils.book_append_sheet(wb, ws, "Daten");
-    const info = [["So füllen Sie die Vorlage aus"], [""],
-      ["1. Eine Zeile pro Person im Blatt „Daten“. Die Beispielzeilen sind frei erfunden und können gelöscht werden."],
-      ["2. ID: beliebiges eindeutiges Kürzel (z. B. P001 oder Personalnummer)."],
-      ["3. Name, Funktion: erscheinen auf der Karte im Organigramm."],
-      ["4. Bereich: Name des Bereichs (maßgeblich ist der Eintrag bei der Bereichsleitung)."],
-      ["5. Vorgesetzter: ID oder exakter Name der direkten Führungskraft. Die Geschäftsführung bleibt leer."],
-      ["6. Ebenen und Teamgrößen werden automatisch berechnet."], [""],
-      ["Danach in organigramm.html über „Excel laden“ öffnen – die Daten bleiben lokal im Browser."]];
-    const wi = XLSX.utils.aoa_to_sheet(info); wi["!cols"] = [{wch:110}];
-    XLSX.utils.book_append_sheet(wb, wi, "Anleitung");
-    XLSX.writeFile(wb, "vorlage_organigramm.xlsx");
+    XLSX.writeFile(wb, "testdaten_organigramm.xlsx");
   });
 
   /* ---------- Suche ---------- */
@@ -372,27 +391,27 @@
   }
   $("#search").addEventListener("input", applySearch);
 
-  /* ---------- Druck: jede Seite automatisch auf das Blatt skalieren ---------- */
+  /* ---------- Druck: jede Seite auf das Blatt skalieren ---------- */
   function fitForPrint(){
     const [w, h] = printArea();
     $("#page-size").textContent = `@page { size: ${$("#format").value} landscape; margin: ${MARGIN_MM}mm; }`;
     document.documentElement.style.setProperty("--sheet-h", (h - 2) + "px");
     document.querySelectorAll(".sheet").forEach(s => {
-      const c = s.querySelector(".chart");
+      const c = s.querySelector(".chart"); if(!c) return;
       c.style.zoom = 1;
-      const headH = s.querySelector(".sheet-head").offsetHeight + (s.querySelector(".legend")?.offsetHeight || 0) + 70;
-      const z = Math.min(1.35, w / c.scrollWidth, (h - headH) / c.scrollHeight);
-      c.style.zoom = z.toFixed(3);
+      const headH = s.querySelector(".sheet-head").offsetHeight + 40;
+      c.style.zoom = Math.min(s.classList.contains("wf-sheet") ? 2 : 1.4, w / c.scrollWidth, (h - headH) / c.scrollHeight).toFixed(3);
     });
   }
-  function resetPrint(){ document.querySelectorAll(".chart").forEach(c => c.style.zoom = ""); }
   addEventListener("beforeprint", fitForPrint);
-  addEventListener("afterprint", resetPrint);
-  $("#format").addEventListener("change", chooseLayouts);
+  addEventListener("afterprint", () => document.querySelectorAll(".chart").forEach(c => c.style.zoom = ""));
   $("#print").addEventListener("click", () => { fitForPrint(); print(); });
+  $("#format").addEventListener("change", render);
+  $("#subcol").addEventListener("change", render);
   window.fitForPrint = fitForPrint;
 
-  render(window.DEMO_DATA || []);
+  rawRows = rowsFromAoa(demoAoa()) || [];
+  render();
 })();
 </script>
 <!-- SheetJS xlsx 0.18.5 · (C) SheetJS · Apache License 2.0 (siehe LICENSE-sheetjs.txt) · liest/schreibt Excel lokal im Browser -->
