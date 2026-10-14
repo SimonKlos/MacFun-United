@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Anleitung Organigramm-Simulator</title>
+<style>
+  @page { size: A4; margin: 18mm 18mm 16mm; }
+  :root{ --red-50:#FCF2F2; --red-200:#F0C4C4; --red-500:#C85A5A; --red-700:#9E3B3B; --gray-100:#E9E9EB; --gray-600:#5B5B63; --gray-800:#2E2E33; --temp:#2F6FA8; --temp-bg:#EEF4FA; }
+  body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;color:var(--gray-800);font-size:10.5pt;line-height:1.45;margin:0}
+  h1{color:var(--red-700);font-size:22pt;margin:0 0 2pt}
+  .sub{color:var(--gray-600);margin-bottom:14pt}
+  h2{color:var(--red-700);font-size:13pt;margin:18pt 0 6pt;border-bottom:2px solid var(--red-200);padding-bottom:3pt}
+  h3{font-size:10.5pt;margin:10pt 0 3pt}
+  ol,ul{margin:4pt 0;padding-left:18pt} li{margin:0 0 4pt}
+  table{border-collapse:collapse;width:100%;margin:6pt 0;font-size:9.5pt}
+  th{background:var(--red-50);color:var(--red-700);text-align:left;padding:5pt 7pt;border-bottom:2px solid var(--red-200)}
+  td{padding:5pt 7pt;border-bottom:1px solid var(--gray-100);vertical-align:top}
+  code{background:#F4F4F5;padding:0 3pt;border-radius:3px;font-size:9.5pt}
+  .shot{width:100%;border:1px solid var(--gray-100);border-radius:6px;margin:6pt 0}
+  .box{background:var(--red-50);border-left:4px solid var(--red-500);padding:7pt 10pt;margin:8pt 0;border-radius:0 6px 6px 0}
+  .temp{color:var(--temp);font-weight:600}
+  .page-break{break-before:page}
+</style>
+</head>
+<body>
+<h1>Organigramm-Simulator</h1>
+<div class="sub">Anleitung für die Personalabteilung · aus dem HR-Works-Auszug zum fertigen Organigramm als PDF</div>
+
+<div class="box"><b>Kurz gesagt:</b> <code>organigramm.html</code> per Doppelklick im Browser öffnen → <b>Excel laden</b> →
+Einstellungen links wählen → <b>Drucken / als PDF speichern</b>. Die Daten werden ausschließlich lokal im Browser verarbeitet –
+nichts wird hochgeladen oder gespeichert, eine Internetverbindung ist nicht nötig.</div>
+
+<img class="shot" src="anleitung-screenshot.png" alt="Ansicht des Simulators: links die Einstellungen, rechts das Organigramm">
+
+<h2>1. Schritt für Schritt</h2>
+<ol>
+  <li><b>Auszug erstellen:</b> In HR Works den Mitarbeiter-Auszug als Excel exportieren (Spalten siehe Abschnitt 3).</li>
+  <li><b>Simulator öffnen:</b> <code>organigramm.html</code> doppelklicken (Chrome oder Edge empfohlen). Zum Ausprobieren gibt es die Buttons <i>Testdaten groß</i> und <i>Testdaten klein</i> mit erfundenen Personen.</li>
+  <li><b>Excel laden:</b> Button <i>Excel laden</i> oder die Datei einfach ins Fenster ziehen. Der Status links zeigt den Dateinamen.</li>
+  <li><b>Auswahl treffen:</b> Gesellschaft, Bereich (Orga-Einheit Level 1) und Stichtag.</li>
+  <li><b>Seiten und Darstellung wählen</b> (siehe Abschnitt 2).</li>
+  <li><b>Hinweise prüfen:</b> Gelbe Hinweise oberhalb des Organigramms zeigen z. B. fehlende Vorgesetzte oder fehlende Wochenstunden.</li>
+  <li><b>PDF erzeugen:</b> <i>Drucken / als PDF speichern</i> → im Druckdialog als Ziel „Als PDF speichern“ wählen. Hintergrundgrafiken sind bereits eingestellt; jede Seite wird automatisch auf A3 bzw. A4 quer skaliert.</li>
+</ol>
+
+<h2>2. Einstellungen</h2>
+<table>
+  <tr><th style="width:30%">Einstellung</th><th>Wirkung</th></tr>
+  <tr><td>Gesellschaft</td><td>Filtert auf eine Gesellschaft (Spalte <i>Gesellschaft / Mandant</i>). Der Name steht oben rechts auf jeder Seite.</td></tr>
+  <tr><td>Bereich</td><td><i>Gesamtorganisation</i> oder ein einzelner Bereich (Spalte <i>Orga-Einheit, Level 1</i>). Die ranghöchste Person des Bereichs steht dann oben.</td></tr>
+  <tr><td>Stichtag</td><td>Es erscheinen nur Personen mit Eintrittsdatum ≤ Stichtag und ohne Austritt vor dem Stichtag. So lassen sich auch zukünftige Stände simulieren.</td></tr>
+  <tr><td>Organigramm in FTE</td><td>Analytics-Ansicht: rote Zahl = direkt unterstellte FTE, „Team“ = alle FTE darunter, in den Listen die FTE je Person.</td></tr>
+  <tr><td>Organigramm in Köpfen</td><td>Wie oben, aber nach Personen gezählt.</td></tr>
+  <tr><td>Organigramm ohne Zahlen</td><td>Kommunikationsversion für Aushänge, Präsentationen und Onboarding – nur Namen und Positionen.</td></tr>
+  <tr><td>Aufbau je Bereich</td><td>Wasserfall: wie sich die Gesamtzahl aus den Bereichen zusammensetzt (links FTE, rechts Köpfe) plus Tabelle mit Festangestellten, Aushilfen und Ø FTE je Kopf.</td></tr>
+  <tr><td>Detailseite je Bereich</td><td>Zusätzlich eine eigene Seite pro Bereich (für jede gewählte Organigramm-Art) mit allen Ebenen.</td></tr>
+  <tr><td>Übersicht zeigen</td><td>Wie tief die Gesamtübersicht geht. Tiefere Ebenen erscheinen als „+ N Personen darunter“. Bei bis zu 60 Personen ist automatisch „alle Ebenen“ gewählt.</td></tr>
+  <tr><td>Namen</td><td><i>Vor- und Nachname</i>, <i>Initialen</i> oder <i>Anonym</i> (nur Position) – z. B. für Abstimmungen, bevor Namen kommuniziert werden dürfen.</td></tr>
+  <tr><td>Position anzeigen</td><td>Blendet die Position unter dem Namen ein oder aus.</td></tr>
+  <tr><td>Aushilfen &amp; Werkstudierende</td><td><span class="temp">farblich hervorheben</span> (blaue Markierung), <i>je Team zusammenfassen</i> („+ 4 Aushilfen“) oder <i>ausblenden</i> – dann zählen sie auch in keiner Kennzahl mit.</td></tr>
+  <tr><td>1 FTE entspricht … Wochenstunden</td><td>Standard 40. FTE = Wochenarbeitsstunden ÷ diesem Wert.</td></tr>
+  <tr><td>Papierformat</td><td>A3 quer (empfohlen für große Einheiten) oder A4 quer.</td></tr>
+  <tr><td>Suche</td><td>Markiert Personen nach Name oder Position (nur am Bildschirm).</td></tr>
+</table>
+
+<h2 class="page-break">3. Welche Spalten verwendet werden</h2>
+<p>Der Simulator sucht die Spalten über ihre Überschrift – Reihenfolge und zusätzliche Spalten spielen keine Rolle.</p>
+<table>
+  <tr><th style="width:32%">Spalte im HR-Works-Auszug</th><th>Verwendung</th></tr>
+  <tr><td>Personalnummer</td><td>eindeutige Kennung der Person <b>(Pflicht)</b></td></tr>
+  <tr><td>Vorgesetzter-Personalnummer</td><td>baut die Hierarchie auf <b>(Pflicht)</b>. Leer oder eigene Nummer = oberste Person.</td></tr>
+  <tr><td>Vorname, Name</td><td>Anzeige auf den Karten</td></tr>
+  <tr><td>Position</td><td>Anzeige unter dem Namen; bei „Anonym“ statt des Namens</td></tr>
+  <tr><td>Wochenarbeitsstunden</td><td>Berechnung der FTE (Std. ÷ 40)</td></tr>
+  <tr><td>Hierarchiefeld</td><td>erkennt Aushilfen, Werkstudierende und Praktika (enthält „Aushilfe“, „Werkstudent“, „Temp“, „Prakti“ oder „Intern“)</td></tr>
+  <tr><td>Arbeitsverhältnis</td><td>Ersatz, falls das Hierarchiefeld leer ist („Geringfügig beschäftigt“, „Praktikum“, „Werkstudent“)</td></tr>
+  <tr><td>Gesellschaft / Mandant</td><td>Filter und Angabe oben rechts</td></tr>
+  <tr><td>Orga-Einheit, Level 1</td><td>Bereichs-Filter</td></tr>
+  <tr><td>Name der Organisationseinheit</td><td>Bereichsnamen im Wasserfall und auf den Detailseiten</td></tr>
+  <tr><td>Eintrittsdatum, Austrittsdatum</td><td>Stichtags-Filter</td></tr>
+</table>
+<p>Alle übrigen Spalten (z. B. Geburtsdatum, E-Mail, Dienstwagen) werden ignoriert.</p>
+
+<h2>4. So wird gerechnet</h2>
+<ul>
+  <li><b>Köpfe</b> = Anzahl Personen. <b>FTE</b> = Summe der Wochenarbeitsstunden ÷ 40.</li>
+  <li><b>Direkt</b> = Personen bzw. FTE, die direkt an die Führungskraft berichten. <b>Team</b> = alle Ebenen darunter (ohne die Führungskraft selbst).</li>
+  <li><b>Aufbau je Bereich</b>: jede Person unterhalb der Spitze mit eigenem Team bildet einen Bereich; die Spitze selbst und direkt unterstellte Einzelpersonen (z. B. Assistenz) erscheinen als „Leitung &amp; Stab“. Die Summe ergibt immer das Gesamt.</li>
+  <li>Ist eine Führungskraft am Stichtag nicht aktiv oder außerhalb der Auswahl, hängen ihre Mitarbeitenden automatisch an der nächsthöheren Führungskraft.</li>
+</ul>
+
+<h2>5. Typische Hinweise</h2>
+<table>
+  <tr><th style="width:38%">Hinweis</th><th>Bedeutung / Lösung</th></tr>
+  <tr><td>Vorgesetzte/r … nicht in der Datei</td><td>Die Vorgesetzten-Personalnummer kommt im Auszug nicht vor. In HR Works prüfen oder Auszug vervollständigen.</td></tr>
+  <tr><td>Personen ohne Vorgesetzte/n</td><td>Es gibt mehrere oberste Personen; sie werden unter einer gemeinsamen Spitze gezeigt.</td></tr>
+  <tr><td>keine Wochenarbeitsstunden</td><td>Person zählt mit 0 FTE. Wert in HR Works ergänzen.</td></tr>
+  <tr><td>Personalnummer doppelt</td><td>Nur der erste Eintrag wird verwendet.</td></tr>
+  <tr><td>… am Stichtag nicht aktiv</td><td>Info: Ein- oder Austritte außerhalb des Stichtags werden nicht gezeigt.</td></tr>
+</table>
+
+<h2>6. Datenschutz</h2>
+<ul>
+  <li>Die Excel-Datei verlässt den Rechner nicht: Sie wird ausschließlich im Browser gelesen, nicht hochgeladen und nicht gespeichert. Nach dem Schließen des Fensters sind die Daten weg.</li>
+  <li>Für Weitergaben vor der offiziellen Kommunikation die Option <i>Namen: Anonym</i> oder <i>Initialen</i> nutzen.</li>
+  <li>Analytics-PDFs (FTE, Aushilfen) nur an berechtigte Personen weitergeben.</li>
+</ul>
+</body>
+</html>

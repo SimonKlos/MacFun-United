@@ -1,1 +1,4 @@
 node_modules/
+# echte HR-Daten nie einchecken
+*HR_Works*.xlsx
+*Auszug*.xlsx

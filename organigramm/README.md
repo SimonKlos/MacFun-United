@@ -1,39 +1,42 @@
-# Organigramm (HTML + PDF)
+# Organigramm-Simulator
 
-`organigramm.html` ist **eine einzige, eigenständige Datei**: herunterladen, per Doppelklick im Browser öffnen,
-Excel laden, als PDF drucken. Keine Installation, kein Internet nötig, die Daten bleiben lokal im Browser.
+Erstellt aus dem **HR-Works-Mitarbeiterauszug** (Excel) Organigramme als Bildschirmansicht und PDF.
+`organigramm.html` ist **eine einzige, eigenständige Datei**: per Doppelklick im Browser öffnen, Excel laden,
+Optionen wählen, als PDF drucken. Keine Installation, kein Internet nötig, die Daten bleiben lokal im Browser.
 
-## Was erzeugt wird (je Org-Einheit 1, z. B. „Männerfußball“)
+Ausführliche Bedienung: **`Anleitung_Organigramm-Simulator.pdf`**
 
-1. **Organigramm in FTE**: schwarz = gesamt, dunkelgrau = Bereich (N-1, summiert), hellgrau = Org-Einheit,
-   weiße Kästchen = Personen mit FTE. Praktikant/innen & Aushilfen stehen in **blauer** Schrift.
-2. **Organigramm in Köpfen**: gleiche Struktur, gezählt nach Personen.
-3. **Aufbau nach Bereichen**: Wasserfall je Bereich (N-1) bis Gesamt, links in FTE, rechts in Köpfen.
+## Ausgaben (einzeln an-/abwählbar)
 
-## Erwartete Excel-Spalten
-
-`N-1 (Person) | N-2 (Person) | N-3 (Person) | Org-Einheit 1 | Org-Einheit 2 | Org-Einheit 3 | Mitarbeitername | Summe von FTE | Personalfall | Organigramm final`
-
-| Spalte | Verwendung |
+| Seite | Inhalt |
 |---|---|
-| Org-Einheit 1 | oberste Einheit / Seitentitel (Teil vor „ / “, z. B. „Männerfußball“) |
-| Organigramm final | Bereich auf Ebene N-1 (dunkelgraue Kästen, Wasserfall-Zeilen) |
-| Org-Einheit 2 | Org-Einheit darunter (hellgraue Kästen), Präfix „Männerfußball - “ wird entfernt; umschaltbar auf Org-Einheit 3 |
-| Mitarbeitername | Personen-Kästchen; jede Zeile = 1 Kopf |
-| Summe von FTE | FTE je Person (Komma oder Punkt) |
-| Org-Einheit 2/3 enthält „Prakti“ oder „Aushilf“ | Person wird blau dargestellt und direkt unter dem Bereich gezeigt |
-| N-1/N-2/N-3 (Person), Personalfall | werden aktuell nicht verwendet |
+| Organigramm in FTE | Analytics: direkt unterstellte FTE (rote Zahl), Team-FTE, FTE je Person |
+| Organigramm in Köpfen | Analytics: direkt unterstellte Personen, Teamgröße |
+| Organigramm ohne Zahlen | Kommunikationsversion, nur Namen/Positionen |
+| Aufbau je Bereich | Wasserfall FTE + Köpfe je Bereich und Kennzahlentabelle (Festangestellte, Aushilfen, Ø FTE/Kopf) |
+| Detailseite je Bereich | je Bereich eine eigene Seite mit allen Ebenen |
 
-Die Kopfzeile darf auch weiter unten stehen (z. B. Pivot-Tabelle mit Filtern darüber). Summenzeilen
-(„Gesamtergebnis“) und Zeilen ohne Mitarbeitername werden ignoriert. Leeres „Org-Einheit 1“ wird von oben übernommen.
+Weitere Optionen: Gesellschaft, Bereich, Stichtag, Tiefe der Übersicht, Namen (voll / Initialen / anonym),
+Position ein/aus, Aushilfen (hervorheben / zusammenfassen / ausblenden), FTE-Basis (Standard 40 Std.), A3/A4.
+
+## Verwendete Spalten
+
+`Personalnummer` und `Vorgesetzter-Personalnummer` (Hierarchie, Pflicht) · `Vorname`, `Name` · `Position` ·
+`Wochenarbeitsstunden` (FTE = Std. ÷ 40) · `Hierarchiefeld` (Aushilfe/Werkstudent/Praktikum) · `Arbeitsverhältnis` (Ersatz) ·
+`Gesellschaft / Mandant` (oben rechts, Filter) · `Orga-Einheit, Level 1` (Bereichsfilter) · `Name der Organisationseinheit` (Bereichsnamen) ·
+`Eintrittsdatum` / `Austrittsdatum` (Stichtag). Alle anderen Spalten werden ignoriert.
 
 ## Dateien
 
 | Datei | Zweck |
 |---|---|
-| `organigramm.html` | Organigramm-Seite (Bildschirm + Druck/PDF), alles in einer Datei |
-| `testdaten_organigramm.xlsx` | fiktive Testdaten im Aufbau der Original-Excel (64,75 FTE / 74 Köpfe) |
-| `Organigramm_Mockup.pdf` | Beispiel-PDF (A3 quer) mit den Testdaten |
+| `organigramm.html` | der Simulator, alles in einer Datei |
+| `Anleitung_Organigramm-Simulator.pdf` | Anleitung für die Personalabteilung |
+| `testdaten_gross.xlsx`, `testdaten_klein.xlsx` | fiktive Testdaten im HR-Works-Spaltenaufbau (133 bzw. 25 aktive Personen) |
+| `Beispiel_gross.pdf`, `Beispiel_klein.pdf` | Beispiel-Ausdrucke mit den Testdaten |
 | `tools/beispieldaten_erzeugen.py` | erzeugt die Testdaten neu und setzt sie als Demo in die HTML ein |
+| `tools/anleitung.html` | Quelle der Anleitung |
 | `tools/pdf_erstellen.mjs` | optional: PDF per Kommandozeile (`node tools/pdf_erstellen.mjs daten.xlsx A3`, benötigt Playwright) |
 | `LICENSE-sheetjs.txt` | Lizenz der eingebetteten Excel-Bibliothek SheetJS 0.18.5 (Apache-2.0) |
+
+Echte HR-Auszüge gehören **nicht** in dieses Repository.

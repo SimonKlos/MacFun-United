@@ -3,140 +3,238 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Organigramm</title>
+<title>Organigramm-Simulator</title>
 <style id="page-size">@page { size: A3 landscape; margin: 10mm; }</style>
 <style>
   :root{
-    --ink:#111111; --text:#1F1F1F; --muted:#6B6B6B;
-    --g-dark:#7F7F7F; --g-mid:#A6A6A6; --g-light:#E4E4E4; --g-faint:#F3F3F3; --line:#BFBFBF;
-    --blue:#1F5FBF; --paper:#FFFFFF; --bg:#EDEDED;
-    --font:"Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
-    --font-head:"Arial Black", "Helvetica Neue", Arial, sans-serif;
+    --red-50:#FCF2F2; --red-100:#F8E1E1; --red-200:#F0C4C4; --red-300:#E39A9A;
+    --red-500:#C85A5A; --red-700:#9E3B3B; --red-900:#5E2323;
+    --gray-25:#FAFAFA; --gray-50:#F4F4F5; --gray-100:#E9E9EB; --gray-200:#D9D9DD;
+    --gray-400:#A1A1AA; --gray-600:#5B5B63; --gray-800:#2E2E33;
+    --temp:#2F6FA8; --temp-bg:#EEF4FA; --temp-line:#B9D0E6;
+    --bg:var(--gray-50); --paper:#FFFFFF; --text:var(--gray-800); --muted:var(--gray-600); --line:var(--gray-400);
+    --font:"Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.3}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.35}
+  .app{display:grid;grid-template-columns:288px 1fr;min-height:100vh}
 
-  /* ---------- Bedienleiste (nur Bildschirm) ---------- */
-  .toolbar{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--g-light);
-    display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:10px 20px}
-  .toolbar h1{font:italic 900 17px/1 var(--font-head);text-transform:uppercase;margin:0 6px 0 0;color:var(--ink)}
-  .btn{font:inherit;border:1px solid var(--line);background:var(--paper);color:var(--text);border-radius:4px;
-    padding:6px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
-  .btn:hover{border-color:var(--ink)}
-  .btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
-  .btn.primary:hover{background:#333}
-  .toolbar select,.toolbar input[type=search]{font:inherit;border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--paper);color:var(--text)}
-  .toolbar label.opt{display:inline-flex;gap:6px;align-items:center;color:var(--muted);font-size:12px}
-  .status{font-size:12px;color:var(--muted);padding:3px 10px;border-radius:999px;background:var(--g-faint);border:1px solid var(--g-light)}
-  .status.demo{color:var(--blue);border-color:#C9D8F0;background:#F1F5FC}
-  .spacer{flex:1}
-  nav.jump{display:flex;flex-wrap:wrap;gap:6px;padding:10px 20px 0}
-  nav.jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--paper)}
-  nav.jump a:hover{color:var(--ink);border-color:var(--ink)}
-  .warnings{margin:12px 20px 0;padding:10px 14px;border-radius:6px;background:#FFF7E6;border:1px solid #F3D9A4;color:#6B4A00;font-size:12px}
+  /* ---------- Einstellungen (nur Bildschirm) ---------- */
+  .panel{background:var(--paper);border-right:1px solid var(--gray-100);padding:18px 18px 40px;position:sticky;top:0;height:100vh;overflow:auto}
+  .panel h1{font-size:18px;margin:0;color:var(--red-700)}
+  .panel .tag{font-size:11.5px;color:var(--muted);margin:2px 0 14px}
+  .panel h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--red-500);margin:18px 0 8px;font-weight:700}
+  .panel label.row{display:flex;flex-direction:column;gap:4px;margin:0 0 10px;font-size:12px;color:var(--muted)}
+  .panel label.chk{display:flex;gap:8px;align-items:center;margin:0 0 7px;font-size:13px;color:var(--text);cursor:pointer}
+  .panel label.chk small{color:var(--muted)}
+  .panel select,.panel input[type=date],.panel input[type=number],.panel input[type=search]{font:inherit;color:var(--text);border:1px solid var(--gray-200);border-radius:6px;padding:6px 8px;background:var(--paper);width:100%}
+  .panel input[type=checkbox]{accent-color:var(--red-500);width:15px;height:15px}
+  .btns{display:flex;flex-wrap:wrap;gap:6px}
+  .btn{font:inherit;border:1px solid var(--gray-200);background:var(--paper);color:var(--text);border-radius:6px;padding:6px 10px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;justify-content:center}
+  .btn:hover{border-color:var(--red-300);background:var(--red-50)}
+  .btn.primary{background:var(--red-500);border-color:var(--red-500);color:#fff;width:100%;padding:8px 10px}
+  .btn.primary:hover{background:var(--red-700)}
+  .btn.small{font-size:12px;padding:4px 9px}
+  .status{display:block;font-size:12px;color:var(--muted);padding:6px 10px;border-radius:6px;background:var(--gray-50);border:1px solid var(--gray-100);margin-top:8px}
+  .status.demo{background:var(--red-50);border-color:var(--red-200);color:var(--red-700)}
+  .hint{font-size:11px;color:var(--muted);margin:-4px 0 10px}
+  .privacy{margin-top:18px;font-size:11px;color:var(--muted);border-top:1px solid var(--gray-100);padding-top:10px}
+
+  .content{min-width:0}
+  nav.jump{display:flex;flex-wrap:wrap;gap:6px;padding:14px 20px 0}
+  nav.jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:3px 10px;border-radius:999px;border:1px solid var(--gray-200);background:var(--paper)}
+  nav.jump a:hover{color:var(--red-700);border-color:var(--red-300)}
+  .warnings{margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#FFF7E6;border:1px solid #F3D9A4;color:#6B4A00;font-size:12px}
   .warnings ul{margin:4px 0 0;padding-left:18px}
-  .drop-hint{position:fixed;inset:0;background:rgba(0,0,0,.06);border:3px dashed var(--ink);display:none;
-    align-items:center;justify-content:center;font-size:22px;color:var(--ink);z-index:50}
+  .drop-hint{position:fixed;inset:0;background:rgba(200,90,90,.12);border:3px dashed var(--red-500);display:none;align-items:center;justify-content:center;font-size:22px;color:var(--red-700);z-index:50}
   body.dragging .drop-hint{display:flex}
 
   /* ---------- Blätter ---------- */
   main{padding:16px 20px 40px;display:flex;flex-direction:column;gap:20px}
-  .sheet{background:var(--paper);border:1px solid var(--g-light);padding:22px 28px 24px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-  .sheet-head{display:flex;align-items:flex-start;gap:24px;margin-bottom:14px}
-  .sheet-head h2{margin:0;font:italic 900 26px/1.1 var(--font-head);text-transform:uppercase;letter-spacing:.2px;color:var(--ink)}
-  .sheet-head h2 .unit{color:var(--g-dark)}
-  .sheet-head .sub{margin-top:8px;width:380px;font-size:11px;color:var(--muted)}
-  .sheet-head .sub div{border-top:1px solid var(--ink);padding:3px 0 5px}
-  .legend{margin-left:auto;display:grid;grid-template-columns:auto auto;gap:5px 10px;align-items:center;font-size:11.5px;color:var(--text)}
-  .chip{display:inline-flex;align-items:center;justify-content:center;width:40px;height:16px;font-size:10px;font-weight:700;color:#fff}
-  .chip.k{background:var(--ink)} .chip.d{background:var(--g-dark)} .chip.l{background:var(--g-light);color:var(--text)}
-  .chip.p{background:#fff;border:1px solid var(--line);color:var(--text);font-weight:400}
-  .chip.b{background:#fff;border:1px solid var(--line);color:var(--blue);font-weight:400}
-  .chart-wrap{overflow:auto;padding:4px 0}
+  .sheet{background:var(--paper);border:1px solid var(--gray-100);border-radius:10px;padding:18px 22px 22px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .sheet-head{display:flex;align-items:flex-start;gap:16px;border-bottom:2px solid var(--red-200);padding-bottom:10px;margin-bottom:6px}
+  .sheet-head .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red-500);font-weight:700}
+  .sheet-head h2{margin:2px 0 0;font-size:22px;color:var(--gray-800)}
+  .sheet-head .stand{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .sheet-head .right{margin-left:auto;text-align:right}
+  .sheet-head .company{font-size:13px;font-weight:700;color:var(--red-700);letter-spacing:.03em}
+  .sheet-head .facts{display:flex;gap:18px;justify-content:flex-end;color:var(--muted);font-size:11.5px;margin-top:6px}
+  .sheet-head .facts b{display:block;font-size:18px;color:var(--gray-800);font-variant-numeric:tabular-nums}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;color:var(--muted);font-size:11px;margin:8px 0 4px}
+  .legend .badge{position:static}
+  .legend .tchip{display:inline-block;width:22px;height:12px;border-radius:3px;background:var(--temp-bg);border:1px solid var(--temp-line);border-left:3px solid var(--temp);vertical-align:-2px;margin-right:4px}
+  .chart-wrap{overflow:auto;padding:8px 0 4px}
   .chart{width:max-content;margin:0 auto}
   .sheet-foot{display:none}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
 
-  /* ---------- Organigramm ---------- */
-  .tree ul{position:relative;display:flex;justify-content:center;margin:0;padding:22px 0 0}
-  .tree li{list-style:none;position:relative;display:flex;flex-direction:column;align-items:center;padding:22px 0 0}
+  /* ---------- Baum ---------- */
+  .tree ul{position:relative;display:flex;justify-content:center;margin:0;padding:18px 0 0}
+  .tree li{list-style:none;position:relative;display:flex;flex-direction:column;align-items:center;padding:18px 5px 0}
   .tree > ul{padding-top:0} .tree > ul > li{padding-top:0}
-  .tree li::before,.tree li::after{content:"";position:absolute;top:0;right:50%;width:50%;height:22px;border-top:1px solid var(--g-mid)}
-  .tree li::after{right:auto;left:50%;border-left:1px solid var(--g-mid)}
+  .tree li::before,.tree li::after{content:"";position:absolute;top:0;right:50%;width:50%;height:18px;border-top:1.5px solid var(--line)}
+  .tree li::after{right:auto;left:50%;border-left:1.5px solid var(--line)}
   .tree li:only-child::before,.tree li:only-child::after{display:none}
   .tree li:only-child{padding-top:0}
   .tree li:first-child::before,.tree li:last-child::after{border:0 none}
-  .tree li:last-child::before{border-right:1px solid var(--g-mid)}
-  .tree ul ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:1px solid var(--g-mid)}
+  .tree li:last-child::before{border-right:1.5px solid var(--line);border-radius:0 6px 0 0}
+  .tree li:first-child::after{border-radius:6px 0 0 0}
+  .tree ul ul::before{content:"";position:absolute;top:0;left:50%;height:18px;border-left:1.5px solid var(--line)}
   .tree > ul > li::before,.tree > ul > li::after{display:none}
-  .tree ul ul > li{padding-left:14px;padding-right:14px}
 
-  .box{display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:nowrap}
-  .box span{overflow:hidden;text-overflow:ellipsis}
-  .box b{font-variant-numeric:tabular-nums}
-  .box.root{background:var(--ink);color:#fff;font-weight:700;font-size:15px;height:30px;padding:0 14px;min-width:240px}
-  .box.n1{background:var(--g-dark);color:#fff;font-weight:700;font-size:13.5px;height:26px;padding:0 10px;width:100%}
-  .cols{display:flex;gap:12px;margin-top:10px;align-self:stretch}
-  .col{width:220px}
-  .blk{position:relative;padding-left:14px;margin-top:12px}
-  .blk:first-child{margin-top:0}
-  .blk::before{content:"";position:absolute;left:0;top:13px;width:10px;border-top:1px solid var(--g-mid)}
-  .blk::after{content:"";position:absolute;left:0;top:-12px;bottom:0;border-left:1px solid var(--g-mid)}
-  .blk:first-child::after{top:-10px}
-  .blk:last-child::after{bottom:auto;height:25px}
-  .blk:first-child:last-child::after{height:23px}
-  .blk.direct::before{top:11px}
-  .box.sub{background:var(--g-light);color:var(--text);font-weight:700;font-size:12px;height:26px;padding:0 9px;margin-bottom:4px}
-  .box.sub.cont{background:var(--g-faint);color:var(--muted);font-weight:600}
-  .box.p{background:#fff;border:1px solid var(--line);font-size:11.5px;height:22px;padding:0 8px;margin-bottom:4px;margin-left:8px}
-  .blk.direct .box.p{margin-left:0}
-  .box.p b{font-weight:400;color:var(--muted);font-size:11px}
-  .box.p.temp span{color:var(--blue)}
-  .box.hit{outline:3px solid #F2B705;outline-offset:1px}
+  /* Karte (Führungskraft) */
+  .card{position:relative;width:184px;background:#fff;border:1px solid var(--gray-200);border-top:4px solid var(--red-300);border-radius:8px;padding:8px 10px;text-align:left;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .card .n{font-weight:650;font-size:13px;color:var(--gray-800);padding-right:30px;overflow-wrap:anywhere}
+  .card .f{font-size:11.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+  .card .t{margin-top:6px;padding-top:5px;border-top:1px dashed var(--gray-100);font-size:10.5px;color:var(--muted);display:flex;justify-content:space-between;gap:6px}
+  .card .t b{color:var(--gray-800);font-variant-numeric:tabular-nums}
+  .badge{position:absolute;top:7px;right:8px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--red-500);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+  .card.lvl-0{background:var(--red-100);border-color:var(--red-200);border-top-color:var(--red-500);width:204px}
+  .card.lvl-0 .n{font-size:14px}
+  .card.lvl-1{border-top-color:var(--red-300)} .card.lvl-2{border-top-color:var(--red-200)}
+  .card.lvl-3,.card.lvl-4,.card.lvl-5,.card.lvl-6{border-top-color:var(--gray-200)}
+  .card.ceo{background:var(--red-700);border-color:var(--red-700);color:#fff;width:224px}
+  .card.ceo .n,.card.ceo .f,.card.ceo .t,.card.ceo .t b{color:#fff}
+  .card.ceo .badge{background:#fff;color:var(--red-700)}
+  .card.ceo .t{border-top-color:rgba(255,255,255,.3)}
+  .card.temp{border-left:4px solid var(--temp)}
+  .card.temp .f::after,.member.temp .f::after{content:" · Aushilfe";color:var(--temp);font-weight:600}
+  .card .more{margin-top:6px;font-size:10.5px;font-weight:600;color:var(--red-700);background:var(--red-50);border-radius:4px;padding:2px 6px;display:inline-block}
+  .card.ceo .more{background:rgba(255,255,255,.18);color:#fff}
+  .card.hit,.member.hit{outline:3px solid #F2B705;outline-offset:2px}
 
-  /* ---------- Wasserfall ---------- */
+  /* Mitarbeitende ohne eigene Reports: kompakte Liste */
+  .members{width:184px;background:var(--gray-25);border:1px solid var(--gray-200);border-radius:8px;padding:3px 0}
+  .member{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;padding:4px 10px;border-bottom:1px solid var(--gray-100)}
+  .member:last-child{border-bottom:0}
+  .member .n{font-size:12px;font-weight:600;color:var(--gray-800)}
+  .member .f{font-size:10.5px;color:var(--muted)}
+  .member .v{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;padding-top:1px}
+  .member.temp{background:var(--temp-bg);border-left:3px solid var(--temp);padding-left:7px}
+  .member.temp .n{color:var(--temp)}
+  .member.sum{font-style:italic}
+
+  /* Kompakt-Layout: tiefe Ebenen eingerückt */
+  .hnode{display:flex;flex-direction:column;align-items:flex-start}
+  .hang{display:flex;flex-direction:column;gap:8px;padding-top:8px;margin-left:16px}
+  .h-item{position:relative;padding-left:14px}
+  .h-item::before{content:"";position:absolute;left:0;top:20px;width:12px;border-top:1.5px solid var(--line)}
+  .h-item::after{content:"";position:absolute;left:0;top:-8px;bottom:0;border-left:1.5px solid var(--line)}
+  .h-item:last-child::after{bottom:auto;height:28px}
+
+  /* Wasserfall + Tabelle */
   .wf text{font-family:var(--font)}
+  table.kpi{border-collapse:collapse;margin:22px auto 0;font-size:12.5px;min-width:760px}
+  table.kpi th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--red-700);text-align:right;padding:6px 12px;border-bottom:2px solid var(--red-200)}
+  table.kpi th:first-child,table.kpi td:first-child{text-align:left}
+  table.kpi td{padding:6px 12px;border-bottom:1px solid var(--gray-100);text-align:right;font-variant-numeric:tabular-nums}
+  table.kpi tr.total td{font-weight:700;border-top:2px solid var(--gray-200);border-bottom:0}
+
+  /* Hilfe */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:60;padding:16px}
+  .modal.open{display:flex}
+  .modal .box{background:#fff;border-radius:12px;max-width:640px;width:100%;max-height:90vh;overflow:auto;padding:22px 26px}
+  .modal h2{margin:0 0 8px;color:var(--red-700)}
+  .modal ol{padding-left:20px} .modal li{margin:0 0 8px}
+
+  @media (max-width:900px){
+    .app{grid-template-columns:1fr}
+    .panel{position:static;height:auto;border-right:0;border-bottom:1px solid var(--gray-100)}
+  }
 
   /* ---------- Druck / PDF ---------- */
   @media print{
     body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    .toolbar,nav.jump,.warnings,.drop-hint{display:none !important}
+    .panel,nav.jump,.warnings,.drop-hint,.modal{display:none !important}
+    .app{display:block}
     main{padding:0;gap:0;display:block}
-    .sheet{border:0;box-shadow:none;padding:0;break-after:page;page-break-after:always;
-      height:var(--sheet-h);display:flex;flex-direction:column;overflow:hidden}
+    .sheet{border:0;border-radius:0;box-shadow:none;padding:0;break-after:page;page-break-after:always;height:var(--sheet-h);display:flex;flex-direction:column;overflow:hidden}
     .sheet:last-child{break-after:auto;page-break-after:auto}
-    .chart-wrap{overflow:visible;flex:1;display:flex;align-items:flex-start;justify-content:center}
-    .sheet-foot{display:flex;justify-content:space-between;font-size:9px;color:var(--g-mid);border-top:1px solid var(--g-light);padding-top:4px}
-    .box.hit{outline:0}
+    .chart-wrap{overflow:visible;flex:1;display:flex;align-items:flex-start;justify-content:center;padding-top:10px}
+    .sheet-foot{display:flex;justify-content:space-between;font-size:9px;color:var(--gray-400);border-top:1px solid var(--gray-100);padding-top:4px}
+    .card,.members{box-shadow:none}
+    .card.hit,.member.hit{outline:0}
   }
 </style>
 </head>
 <body>
 <div class="drop-hint">Excel-Datei hier ablegen</div>
+<div class="app">
+<aside class="panel">
+  <h1>Organigramm-Simulator</h1>
+  <div class="tag">aus dem HR-Works-Auszug · läuft komplett lokal</div>
 
-<header class="toolbar">
-  <h1>Organigramm</h1>
-  <span id="status" class="status demo">Testdaten (fiktiv)</span>
-  <label class="btn primary" title="Excel (.xlsx) wählen – wird nur lokal im Browser gelesen">
-    Excel laden<input id="file" type="file" accept=".xlsx,.xlsm,.xls,.csv" hidden>
-  </label>
-  <button class="btn" id="template">Testdatei herunterladen</button>
-  <label class="opt" title="Aus welcher Spalte die grauen Org-Einheiten unter den Bereichen kommen">Unterebene
-    <select id="subcol"><option value="org2">Org-Einheit 2</option><option value="org3">Org-Einheit 3</option></select></label>
-  <input id="search" type="search" placeholder="Name suchen …">
-  <span class="spacer"></span>
-  <select id="format" title="Papierformat für Druck/PDF">
-    <option value="A3">A3 quer</option>
-    <option value="A4">A4 quer</option>
-  </select>
-  <button class="btn" id="print">Drucken / PDF</button>
-</header>
-<nav class="jump" id="jump"></nav>
-<div id="warnings"></div>
-<main id="main"></main>
+  <h3>1 · Daten</h3>
+  <label class="btn primary">Excel laden<input id="file" type="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label>
+  <div class="btns" style="margin-top:6px">
+    <button class="btn small" data-demo="gross">Testdaten groß</button>
+    <button class="btn small" data-demo="klein">Testdaten klein</button>
+  </div>
+  <span id="status" class="status demo"></span>
+
+  <h3>2 · Auswahl</h3>
+  <label class="row">Gesellschaft<select id="ges"></select></label>
+  <label class="row">Bereich (Orga-Einheit, Level 1)<select id="area"></select></label>
+  <label class="row">Stichtag<input id="stichtag" type="date"></label>
+  <div class="hint">Nur Personen, die am Stichtag eingetreten und noch nicht ausgetreten sind.</div>
+
+  <h3>3 · Seiten im Ausdruck</h3>
+  <label class="chk"><input type="checkbox" id="pg-fte" checked><span>Organigramm in FTE <small>(Analytics)</small></span></label>
+  <label class="chk"><input type="checkbox" id="pg-kopf" checked><span>Organigramm in Köpfen <small>(Analytics)</small></span></label>
+  <label class="chk"><input type="checkbox" id="pg-komm" checked><span>Organigramm ohne Zahlen <small>(Kommunikation)</small></span></label>
+  <label class="chk"><input type="checkbox" id="pg-wf" checked><span>Aufbau je Bereich <small>(Wasserfall + Tabelle)</small></span></label>
+  <label class="chk"><input type="checkbox" id="pg-detail"><span>Detailseite je Bereich</span></label>
+  <label class="row" style="margin-top:8px">Übersicht zeigen<select id="depth">
+    <option value="0">alle Ebenen</option>
+    <option value="2">bis Ebene 2 (Bereichsleitungen)</option>
+    <option value="3" selected>bis Ebene 3</option>
+    <option value="4">bis Ebene 4</option></select></label>
+  <div class="hint">Tiefere Ebenen werden in der Übersicht als „+ N Personen“ zusammengefasst – vollständig auf den Detailseiten.</div>
+
+  <h3>4 · Darstellung</h3>
+  <label class="row">Namen<select id="names">
+    <option value="voll">Vor- und Nachname</option>
+    <option value="init">Initialen</option>
+    <option value="anon">Anonym (nur Position)</option></select></label>
+  <label class="chk"><input type="checkbox" id="showpos" checked>Position anzeigen</label>
+  <label class="row">Aushilfen &amp; Werkstudierende<select id="temp">
+    <option value="mark">farblich hervorheben</option>
+    <option value="sum">je Team zusammenfassen</option>
+    <option value="hide">ausblenden (auch in den Zahlen)</option></select></label>
+  <label class="row">1 FTE entspricht … Wochenstunden<input id="fteh" type="number" min="1" max="60" step="0.5" value="40"></label>
+
+  <h3>5 · Ausgabe</h3>
+  <label class="row">Papierformat<select id="format"><option value="A3">A3 quer</option><option value="A4">A4 quer</option></select></label>
+  <button class="btn primary" id="print">Drucken / als PDF speichern</button>
+  <label class="row" style="margin-top:12px">Suche<input id="search" type="search" placeholder="Name oder Position …"></label>
+  <button class="btn small" id="help">Kurzanleitung</button>
+
+  <div class="privacy">Die Excel-Datei wird nur in diesem Browser gelesen – kein Upload, keine Speicherung.</div>
+</aside>
+
+<div class="content">
+  <nav class="jump" id="jump"></nav>
+  <div id="warnings"></div>
+  <main id="main"></main>
+</div>
+</div>
+
+<div class="modal" id="helpbox"><div class="box">
+  <h2>Kurzanleitung</h2>
+  <ol>
+    <li><b>Excel laden</b> – den HR-Works-Auszug wählen oder ins Fenster ziehen. Benötigt werden u. a. <i>Personalnummer</i>, <i>Vorgesetzter-Personalnummer</i>, <i>Name/Vorname</i> und <i>Wochenarbeitsstunden</i>.</li>
+    <li><b>Auswahl</b> – Gesellschaft, Bereich und Stichtag festlegen.</li>
+    <li><b>Seiten</b> – ankreuzen, was in den Ausdruck soll: Analytics (FTE, Köpfe, Wasserfall) und/oder die Kommunikationsversion ohne Zahlen.</li>
+    <li><b>Darstellung</b> – Namen voll, als Initialen oder anonym; Aushilfen hervorheben, zusammenfassen oder ausblenden.</li>
+    <li><b>Drucken / als PDF speichern</b> – im Druckdialog „Als PDF speichern“ wählen. Jede Seite wird automatisch auf das Papierformat skaliert.</li>
+  </ol>
+  <p style="color:var(--muted);font-size:12px">Hinweise zu fehlenden Vorgesetzten, Stunden usw. erscheinen gelb über dem Organigramm. Ausführliche Anleitung: <i>Anleitung_Organigramm-Simulator.pdf</i>.</p>
+  <button class="btn" id="helpclose">Schließen</button>
+</div></div>
 
 <!-- Fiktive Testdaten (werden von tools/beispieldaten_erzeugen.py ersetzt) -->
-<script>window.DEMO_DATA = /*DEMO-DATEN-START*/[{"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Ben Brandt", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Physiotherapie", "Org-Einheit 3": "", "Mitarbeitername": "Clara Cordes", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Ben Brandt", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Physiotherapie", "Org-Einheit 3": "", "Mitarbeitername": "David Dietz", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Ben Brandt", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Physiotherapie", "Org-Einheit 3": "", "Mitarbeitername": "Elif Engel", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Ben Brandt", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Physiotherapie", "Org-Einheit 3": "", "Mitarbeitername": "Felix Fuchs", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Greta Graf", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Ernährung", "Org-Einheit 3": "", "Mitarbeitername": "Hannes Hahn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Greta Graf", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Ernährung", "Org-Einheit 3": "", "Mitarbeitername": "Ida Imhof", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Greta Graf", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Ernährung", "Org-Einheit 3": "", "Mitarbeitername": "Jonas Jansen", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Greta Graf", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Ernährung", "Org-Einheit 3": "", "Mitarbeitername": "Katrin Kraus", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Lukas Lorenz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Rehabilitation", "Org-Einheit 3": "", "Mitarbeitername": "Mara Maier", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Lukas Lorenz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Rehabilitation", "Org-Einheit 3": "", "Mitarbeitername": "Niklas Nowak", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Olga Ott", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Wissenschaftl. Abteilung", "Org-Einheit 3": "", "Mitarbeitername": "Paul Peters", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Olga Ott", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Wissenschaftl. Abteilung", "Org-Einheit 3": "", "Mitarbeitername": "Rana Quast", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Olga Ott", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Wissenschaftl. Abteilung", "Org-Einheit 3": "", "Mitarbeitername": "Stefan Roth", "Summe von FTE": 0.75, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Tina Seidel", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Mannschaftsärzte", "Org-Einheit 3": "", "Mitarbeitername": "Uwe Thiel", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "Tina Seidel", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Mannschaftsärzte", "Org-Einheit 3": "", "Mitarbeitername": "Vera Ulrich", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Wim Vogt", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Anna Albers", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Yasmin Weber", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Medizinischer Bereich"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Sportliche Leitung", "Org-Einheit 3": "", "Mitarbeitername": "Moritz Ziegler", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Sportliche Leitung", "Org-Einheit 3": "", "Mitarbeitername": "Lea Berger", "Summe von FTE": 0.5, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Nora Lang", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Emil Möller", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Sophie Schulte", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Jan Hoffmann", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Mia Busch", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Tim Arnold", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Sara Kuhn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Leon Winter", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Julia Becker", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Max Albers", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Hanna Brandt", "Summe von FTE": 0.75, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Tobias Kaiser", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Trainerteam", "Org-Einheit 3": "", "Mitarbeitername": "Erik Cordes", "Summe von FTE": 0.5, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Kai Engel", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Anna Fuchs", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Ben Graf", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Clara Hahn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "David Imhof", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Elif Jansen", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Felix Kraus", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Laura Dietz", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Lizenzspieler", "Org-Einheit 3": "", "Mitarbeitername": "Greta Lorenz", "Summe von FTE": 0.75, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Hannes Maier", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Analyse & Technologie", "Org-Einheit 3": "", "Mitarbeitername": "Ida Nowak", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Hannes Maier", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Analyse & Technologie", "Org-Einheit 3": "", "Mitarbeitername": "Jonas Ott", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Katrin Peters", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Video & Spielanalyse", "Org-Einheit 3": "", "Mitarbeitername": "Lukas Quast", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Katrin Peters", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Video & Spielanalyse", "Org-Einheit 3": "", "Mitarbeitername": "Mara Roth", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Katrin Peters", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Video & Spielanalyse", "Org-Einheit 3": "", "Mitarbeitername": "Niklas Seidel", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Katrin Peters", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Video & Spielanalyse", "Org-Einheit 3": "", "Mitarbeitername": "Olga Thiel", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Rana Vogt", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Stefan Weber", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Tina Yilmaz", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Uwe Ziegler", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Vera Berger", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Wim Kaiser", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Yasmin Lang", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Zoe Möller", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Moritz Schulte", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Lea Hoffmann", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Tobias Busch", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Nora Arnold", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Emil Kuhn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Sophie Winter", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Jan Becker", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Mia Albers", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Tim Brandt", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Sara Cordes", "Summe von FTE": 0.75, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "Paul Ulrich", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Scouting", "Org-Einheit 3": "", "Mitarbeitername": "Leon Dietz", "Summe von FTE": 0.5, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Julia Engel", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Zoe Yilmaz", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Max Fuchs", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "Sportliche Leitung"}, {"N-1 (Person)": "Hanna Graf", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Referent Sport-VS", "Org-Einheit 3": "", "Mitarbeitername": "Erik Hahn", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Referent Sport-VS"}, {"N-1 (Person)": "Hanna Graf", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Referent Sport-VS", "Org-Einheit 3": "", "Mitarbeitername": "Laura Imhof", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "Referent Sport-VS"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - EFI", "Org-Einheit 3": "", "Mitarbeitername": "Anna Kraus", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - EFI", "Org-Einheit 3": "", "Mitarbeitername": "Ben Lorenz", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - EFI", "Org-Einheit 3": "", "Mitarbeitername": "Clara Maier", "Summe von FTE": 1, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "David Nowak", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Elif Ott", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "EFI"}, {"N-1 (Person)": "Kai Jansen", "N-2 (Person)": "", "N-3 (Person)": "", "Org-Einheit 1": "Männerfußball / Men's Football", "Org-Einheit 2": "Männerfußball - Praktis & Aushilfen", "Org-Einheit 3": "", "Mitarbeitername": "Felix Peters", "Summe von FTE": 0.25, "Personalfall": "", "Organigramm final": "EFI"}]/*DEMO-DATEN-ENDE*/;</script>
+<script>window.DEMO_DATA = /*DEMO-DATEN-START*/{"gross": [["Benutzerkennung", "Name", "Vorname", "Personalnummer", "Vorgesetzter-Personalnummer", "Organisationseinheiten-Schlüssel", "Orga-Einheit, Level 1", "Orga-Einheit Vorstandsressort", "Position", "Orga-Ebene der Position", "Titel laut Vertrag", "Gesellschaft / Mandant", "Sport / Nicht-Sport", "Hierarchiefeld", "Sport: Start aktueller Vertrag", "Arbeitsverhältnis", "Status (NLZ)", "Geburtsdatum", "Eintrittsdatum", "Austrittsdatum", "Sport: Start aktueller Vertrag", "E-Mail", "DATEV-Personalnummer", "Berechtigung - Darf Homeoffice beantragen", "Berechtigung - Kinderdaten bearbeiten", "Geschlecht", "Arbeitsplan", "Wochenarbeitsstunden", "Hat Dienstwagenanspruch", "Anrede", "Name der Organisationseinheit", "Betriebsstätte-Schlüssel", "Hat Dienstwagen", "Urlaubsart-Schlüssel", "Wochenarbeitstage", "Zeiterfassungsart", "Zeiterfassungsart-Schlüssel", "Stundenlohn"], [5001, "Albers", "Anna", "A10001", "A10001", 1093, "Vorstand", "Ressort Vorstand", "Vorstandsvorsitz", "E0", "Vorstandsvorsitz", "Muster Sport AG", "Nicht-Sport", "Vorstand / Executive Board", "", "Vollzeit", "n/a", "", "2015-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Vorstand", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5002, "Brandt", "Ben", "A10002", "A10001", 1093, "Vorstand", "Ressort Vorstand", "Assistenz des Vorstands", "E1", "Assistenz des Vorstands", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2016-03-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "Vorstand", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5003, "Cordes", "Clara", "A10003", "A10001", 1093, "Vorstand", "Ressort Vorstand", "Referent Strategie", "E1", "Referent Strategie", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2017-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Vorstand", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5004, "Dietz", "David", "A10004", "A10001", 1318, "Sport", "Ressort Vorstand", "Direktor Sport", "E1", "Direktor Sport", "Muster Sport AG", "Sport", "Direktor:in / Director", "", "Vollzeit", "n/a", "", "2018-05-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Sport", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5005, "Engel", "Elif", "A10005", "A10004", 1318, "Sport", "Ressort Vorstand", "Teammanager", "E2", "Teammanager", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2019-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Sport", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5006, "Fuchs", "Felix", "A10006", "A10004", 1041, "Sport", "Ressort Vorstand", "Cheftrainer", "E2", "Cheftrainer", "Muster Sport AG", "Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2020-07-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Trainerteam", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5007, "Graf", "Greta", "A10007", "A10006", 1041, "Sport", "Ressort Vorstand", "Co-Trainer", "E3", "Co-Trainer", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2021-08-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Trainerteam", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5008, "Hahn", "Hannes", "A10008", "A10006", 1041, "Sport", "Ressort Vorstand", "Co-Trainer", "E3", "Co-Trainer", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2022-09-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Trainerteam", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5009, "Imhof", "Ida", "A10009", "A10006", 1041, "Sport", "Ressort Vorstand", "Co-Trainer", "E3", "Co-Trainer", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-10-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Trainerteam", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5010, "Jansen", "Jonas", "A10010", "A10006", 1041, "Sport", "Ressort Vorstand", "Torwarttrainer", "E3", "Torwarttrainer", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2024-11-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Trainerteam", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5011, "Kraus", "Katrin", "A10011", "A10006", 1041, "Sport", "Ressort Vorstand", "Athletiktrainer", "E3", "Athletiktrainer", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2014-12-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Trainerteam", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5012, "Lorenz", "Lukas", "A10012", "A10006", 1041, "Sport", "Ressort Vorstand", "Athletiktrainer", "E3", "Athletiktrainer", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2015-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Trainerteam", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5013, "Maier", "Mara", "A10013", "A10004", 1817, "Sport", "Ressort Vorstand", "Leitung Medizin", "E2", "Leitung Medizin", "Muster Sport AG", "Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2016-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Medizinische Abteilung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5014, "Nowak", "Niklas", "A10014", "A10013", 1817, "Sport", "Ressort Vorstand", "Physiotherapeut/in", "E3", "Physiotherapeut/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2017-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Medizinische Abteilung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5015, "Ott", "Olga", "A10015", "A10013", 1817, "Sport", "Ressort Vorstand", "Physiotherapeut/in", "E3", "Physiotherapeut/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2018-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Medizinische Abteilung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5016, "Peters", "Paul", "A10016", "A10013", 1817, "Sport", "Ressort Vorstand", "Physiotherapeut/in", "E3", "Physiotherapeut/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2019-05-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Medizinische Abteilung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5017, "Quast", "Rana", "A10017", "A10013", 1817, "Sport", "Ressort Vorstand", "Physiotherapeut/in", "E3", "Physiotherapeut/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2020-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Medizinische Abteilung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5018, "Roth", "Stefan", "A10018", "A10013", 1817, "Sport", "Ressort Vorstand", "Mannschaftsarzt", "E3", "Mannschaftsarzt", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2021-07-01", "", "", "", "", "Ja", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Medizinische Abteilung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5019, "Seidel", "Tina", "A10019", "A10013", 1817, "Sport", "Ressort Vorstand", "Rehatrainer/in", "E3", "Rehatrainer/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2022-08-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Medizinische Abteilung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5020, "Thiel", "Uwe", "A10020", "A10013", 1817, "Sport", "Ressort Vorstand", "Rehatrainer/in", "E3", "Rehatrainer/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2023-09-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "Medizinische Abteilung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5021, "Ulrich", "Vera", "A10021", "A10004", 1874, "Sport", "Ressort Vorstand", "Leitung Scouting", "E2", "Leitung Scouting", "Muster Sport AG", "Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2024-10-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5022, "Vogt", "Wim", "A10022", "A10021", 1874, "Sport", "Ressort Vorstand", "Scout", "E3", "Scout", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2014-11-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5023, "Weber", "Yasmin", "A10023", "A10021", 1874, "Sport", "Ressort Vorstand", "Scout", "E3", "Scout", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2015-12-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5024, "Yilmaz", "Zoe", "A10024", "A10021", 1874, "Sport", "Ressort Vorstand", "Scout", "E3", "Scout", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2016-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5025, "Ziegler", "Moritz", "A10025", "A10021", 1874, "Sport", "Ressort Vorstand", "Scout", "E3", "Scout", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2017-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5026, "Berger", "Lea", "A10026", "A10021", 1874, "Sport", "Ressort Vorstand", "Scout", "E3", "Scout", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2018-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5027, "Kaiser", "Tobias", "A10027", "A10021", 1874, "Sport", "Ressort Vorstand", "Scout", "E3", "Scout", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2019-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5028, "Lang", "Nora", "A10028", "A10021", 1874, "Sport", "Ressort Vorstand", "Werkstudent/in Scouting", "E3", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2020-05-01", "", "", "", "", "Nein", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5029, "Möller", "Emil", "A10029", "A10021", 1874, "Sport", "Ressort Vorstand", "Werkstudent/in Scouting", "E3", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2021-06-01", "", "", "", "", "Nein", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Scouting", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5030, "Schulte", "Sophie", "A10030", "A10004", 1809, "Sport", "Ressort Vorstand", "Leitung Spielanalyse", "E2", "Leitung Spielanalyse", "Muster Sport AG", "Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2022-07-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Spielanalyse", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5031, "Hoffmann", "Jan", "A10031", "A10030", 1809, "Sport", "Ressort Vorstand", "Videoanalyst/in", "E3", "Videoanalyst/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-08-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Spielanalyse", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5032, "Busch", "Mia", "A10032", "A10030", 1809, "Sport", "Ressort Vorstand", "Videoanalyst/in", "E3", "Videoanalyst/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2024-09-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Spielanalyse", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5033, "Arnold", "Tim", "A10033", "A10030", 1809, "Sport", "Ressort Vorstand", "Videoanalyst/in", "E3", "Videoanalyst/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2014-10-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Spielanalyse", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5034, "Kuhn", "Sara", "A10034", "A10030", 1809, "Sport", "Ressort Vorstand", "Werkstudent/in Analyse", "E3", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2015-11-01", "", "", "", "", "Nein", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Spielanalyse", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5035, "Winter", "Leon", "A10035", "A10001", 1659, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Direktor Nachwuchsleistungszentrum", "E1", "Direktor Nachwuchsleistungszentrum", "Muster Sport AG", "Sport", "Direktor:in / Director", "", "Vollzeit", "n/a", "", "2016-12-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5036, "Becker", "Julia", "A10036", "A10035", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Leitung Leistungsbereich", "E2", "Leitung Leistungsbereich", "Muster Sport AG", "Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2017-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5037, "Albers", "Max", "A10037", "A10036", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Cheftrainer U19", "E3", "Cheftrainer U19", "Muster Sport AG", "Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2018-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5038, "Brandt", "Hanna", "A10038", "A10037", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Co-Trainer U19", "E4", "Co-Trainer U19", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2019-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5039, "Cordes", "Erik", "A10039", "A10037", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Co-Trainer U19", "E4", "Co-Trainer U19", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2020-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5040, "Dietz", "Laura", "A10040", "A10037", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfstrainer U19", "E4", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2021-05-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5041, "Engel", "Kai", "A10041", "A10036", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Cheftrainer U17", "E3", "Cheftrainer U17", "Muster Sport AG", "Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2022-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5042, "Fuchs", "Anna", "A10042", "A10041", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Co-Trainer U17", "E4", "Co-Trainer U17", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-07-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5043, "Graf", "Ben", "A10043", "A10041", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Co-Trainer U17", "E4", "Co-Trainer U17", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2024-08-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5044, "Hahn", "Clara", "A10044", "A10041", 1426, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfstrainer U17", "E4", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2014-09-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "NLZ Leistungsbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5045, "Imhof", "David", "A10045", "A10035", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Leitung Grundlagenbereich", "E2", "Leitung Grundlagenbereich", "Muster Sport AG", "Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2015-10-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5046, "Jansen", "Elif", "A10046", "A10045", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Trainer U15", "E3", "Trainer U15", "Muster Sport AG", "Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2016-11-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5047, "Kraus", "Felix", "A10047", "A10046", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Co-Trainer U15", "E4", "Co-Trainer U15", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2017-12-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5048, "Lorenz", "Greta", "A10048", "A10046", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfstrainer U15", "E4", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2018-01-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5049, "Maier", "Hannes", "A10049", "A10046", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfstrainer U15", "E4", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2019-02-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5050, "Nowak", "Ida", "A10050", "A10045", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Trainer U14", "E3", "Trainer U14", "Muster Sport AG", "Sport", "Teamleitung / Team Lead", "", "Teilzeit", "n/a", "", "2020-03-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5051, "Ott", "Jonas", "A10051", "A10050", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfstrainer U14", "E4", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2021-04-01", "", "", "", "", "Nein", "Nein", "", "8h (Mo-Fr)", 8, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5052, "Peters", "Katrin", "A10052", "A10050", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfstrainer U14", "E4", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2022-05-01", "", "", "", "", "Nein", "Nein", "", "8h (Mo-Fr)", 8, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5053, "Quast", "Lukas", "A10053", "A10045", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Trainer U13", "E3", "Trainer U13", "Muster Sport AG", "Sport", "Teamleitung / Team Lead", "", "Teilzeit", "n/a", "", "2023-06-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5054, "Roth", "Mara", "A10054", "A10053", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfstrainer U13", "E4", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2024-07-01", "", "", "", "", "Nein", "Nein", "", "8h (Mo-Fr)", 8, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5055, "Seidel", "Niklas", "A10055", "A10053", 1582, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfstrainer U13", "E4", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2014-08-01", "", "", "", "", "Nein", "Nein", "", "8h (Mo-Fr)", 8, "Nein", "", "NLZ Grundlagenbereich", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5056, "Thiel", "Olga", "A10056", "A10035", 1659, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Pädagogische Leitung", "E2", "Pädagogische Leitung", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2015-09-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "NLZ", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5057, "Ulrich", "Paul", "A10057", "A10056", 1659, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Internatsbetreuer/in", "E3", "Internatsbetreuer/in", "Muster Sport AG", "Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2016-10-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "NLZ", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5058, "Vogt", "Rana", "A10058", "A10056", 1659, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfe Internat", "E3", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2017-11-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "NLZ", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5059, "Weber", "Stefan", "A10059", "A10056", 1659, "Nachwuchsleistungszentrum", "Ressort Vorstand", "Aushilfe Internat", "E3", "Aushilfe", "Muster Sport AG", "Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2018-12-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "NLZ", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5060, "Yilmaz", "Tina", "A10060", "A10001", 1488, "Marketing & Vertrieb", "Ressort Vorstand", "Direktor Marketing & Vertrieb", "E1", "Direktor Marketing & Vertrieb", "Muster Sport AG", "Nicht-Sport", "Direktor:in / Director", "", "Vollzeit", "n/a", "", "2019-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing & Vertrieb", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5061, "Ziegler", "Uwe", "A10061", "A10060", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Leitung Marketing", "E2", "Leitung Marketing", "Muster Sport AG", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2020-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5062, "Berger", "Vera", "A10062", "A10061", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Teamleitung Social Media", "E3", "Teamleitung Social Media", "Muster Sport AG", "Nicht-Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2021-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5063, "Kaiser", "Wim", "A10063", "A10062", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Social Media Manager/in", "E4", "Social Media Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2022-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5064, "Lang", "Yasmin", "A10064", "A10062", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Social Media Manager/in", "E4", "Social Media Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-05-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5065, "Möller", "Zoe", "A10065", "A10062", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Social Media Manager/in", "E4", "Social Media Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2024-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5066, "Schulte", "Moritz", "A10066", "A10062", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Werkstudent/in Social Media", "E4", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2014-07-01", "", "", "", "", "Nein", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5067, "Hoffmann", "Lea", "A10067", "A10062", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Werkstudent/in Social Media", "E4", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2015-08-01", "", "", "", "", "Nein", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5068, "Busch", "Tobias", "A10068", "A10061", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Teamleitung Content", "E3", "Teamleitung Content", "Muster Sport AG", "Nicht-Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2016-09-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5069, "Arnold", "Nora", "A10069", "A10068", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Content Creator", "E4", "Content Creator", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2017-10-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5070, "Kuhn", "Emil", "A10070", "A10068", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Content Creator", "E4", "Content Creator", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2018-11-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5071, "Winter", "Sophie", "A10071", "A10068", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Content Creator", "E4", "Content Creator", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2019-12-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5072, "Becker", "Jan", "A10072", "A10068", 1099, "Marketing & Vertrieb", "Ressort Vorstand", "Praktikant/in Content", "E4", "Praktikant/in Content", "Muster Sport AG", "Nicht-Sport", "Praktikant:in / Intern", "", "Praktikum", "n/a", "", "2020-01-01", "", "", "", "", "Nein", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Marketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5073, "Albers", "Mia", "A10073", "A10060", 1698, "Marketing & Vertrieb", "Ressort Vorstand", "Leitung Sponsoring", "E2", "Leitung Sponsoring", "Muster Sport AG", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2021-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Sponsoring", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5074, "Brandt", "Tim", "A10074", "A10073", 1698, "Marketing & Vertrieb", "Ressort Vorstand", "Key Account Manager/in", "E3", "Key Account Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2022-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Sponsoring", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5075, "Cordes", "Sara", "A10075", "A10073", 1698, "Marketing & Vertrieb", "Ressort Vorstand", "Key Account Manager/in", "E3", "Key Account Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Sponsoring", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5076, "Dietz", "Leon", "A10076", "A10073", 1698, "Marketing & Vertrieb", "Ressort Vorstand", "Key Account Manager/in", "E3", "Key Account Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2024-05-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Sponsoring", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5077, "Engel", "Julia", "A10077", "A10073", 1698, "Marketing & Vertrieb", "Ressort Vorstand", "Key Account Manager/in", "E3", "Key Account Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2014-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Sponsoring", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5078, "Fuchs", "Max", "A10078", "A10060", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Leitung Ticketing", "E2", "Leitung Ticketing", "Muster Sport AG", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2015-07-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5079, "Graf", "Hanna", "A10079", "A10078", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Teamleitung Service Center", "E3", "Teamleitung Service Center", "Muster Sport AG", "Nicht-Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2016-08-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5080, "Hahn", "Erik", "A10080", "A10079", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Servicemitarbeiter/in", "E4", "Servicemitarbeiter/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2017-09-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5081, "Imhof", "Laura", "A10081", "A10079", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Servicemitarbeiter/in", "E4", "Servicemitarbeiter/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2018-10-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5082, "Jansen", "Kai", "A10082", "A10079", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Aushilfe Service Center", "E4", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2019-11-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5083, "Kraus", "Anna", "A10083", "A10079", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Aushilfe Service Center", "E4", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2020-12-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5084, "Lorenz", "Ben", "A10084", "A10079", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Aushilfe Service Center", "E4", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2021-01-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5085, "Maier", "Clara", "A10085", "A10079", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Aushilfe Service Center", "E4", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2022-02-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5086, "Nowak", "David", "A10086", "A10079", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Aushilfe Service Center", "E4", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2023-03-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5087, "Ott", "Elif", "A10087", "A10079", 1210, "Marketing & Vertrieb", "Ressort Vorstand", "Aushilfe Service Center", "E4", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2024-04-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Ticketing", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5088, "Peters", "Felix", "A10088", "A10001", 1549, "Finanzen & Verwaltung", "Ressort Vorstand", "Direktor Finanzen & Verwaltung", "E1", "Direktor Finanzen & Verwaltung", "Muster Sport AG", "Nicht-Sport", "Direktor:in / Director", "", "Vollzeit", "n/a", "", "2014-05-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Finanzen & Verwaltung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5089, "Quast", "Greta", "A10089", "A10088", 1526, "Finanzen & Verwaltung", "Ressort Vorstand", "Leitung Buchhaltung", "E2", "Leitung Buchhaltung", "Muster Sport AG", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2015-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Buchhaltung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5090, "Roth", "Hannes", "A10090", "A10089", 1526, "Finanzen & Verwaltung", "Ressort Vorstand", "Buchhalter/in", "E3", "Buchhalter/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2016-07-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Buchhaltung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5091, "Seidel", "Ida", "A10091", "A10089", 1526, "Finanzen & Verwaltung", "Ressort Vorstand", "Buchhalter/in", "E3", "Buchhalter/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2017-08-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Buchhaltung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5092, "Thiel", "Jonas", "A10092", "A10089", 1526, "Finanzen & Verwaltung", "Ressort Vorstand", "Buchhalter/in", "E3", "Buchhalter/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2018-09-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "Buchhaltung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5093, "Ulrich", "Katrin", "A10093", "A10089", 1526, "Finanzen & Verwaltung", "Ressort Vorstand", "Buchhalter/in", "E3", "Buchhalter/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2019-10-01", "", "", "", "", "Ja", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Buchhaltung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5094, "Vogt", "Lukas", "A10094", "A10088", 1032, "Finanzen & Verwaltung", "Ressort Vorstand", "Leitung Controlling", "E2", "Leitung Controlling", "Muster Sport AG", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2020-11-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Controlling", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5095, "Weber", "Mara", "A10095", "A10094", 1032, "Finanzen & Verwaltung", "Ressort Vorstand", "Controller/in", "E3", "Controller/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2021-12-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Controlling", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5096, "Yilmaz", "Niklas", "A10096", "A10094", 1032, "Finanzen & Verwaltung", "Ressort Vorstand", "Controller/in", "E3", "Controller/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2022-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Controlling", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5097, "Ziegler", "Olga", "A10097", "A10094", 1032, "Finanzen & Verwaltung", "Ressort Vorstand", "Controller/in", "E3", "Controller/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Controlling", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5098, "Berger", "Paul", "A10098", "A10094", 1032, "Finanzen & Verwaltung", "Ressort Vorstand", "Werkstudent/in Controlling", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2024-03-01", "", "", "", "", "Nein", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Controlling", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5099, "Kaiser", "Rana", "A10099", "A10088", 1350, "Finanzen & Verwaltung", "Ressort Vorstand", "Leitung Personal", "E2", "Leitung Personal", "Muster Sport AG", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2014-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Personal", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5100, "Lang", "Stefan", "A10100", "A10099", 1350, "Finanzen & Verwaltung", "Ressort Vorstand", "HR Business Partner/in", "E3", "HR Business Partner/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2015-05-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Personal", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5101, "Möller", "Tina", "A10101", "A10099", 1350, "Finanzen & Verwaltung", "Ressort Vorstand", "HR Business Partner/in", "E3", "HR Business Partner/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2016-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Personal", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5102, "Schulte", "Uwe", "A10102", "A10099", 1350, "Finanzen & Verwaltung", "Ressort Vorstand", "HR Business Partner/in", "E3", "HR Business Partner/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2017-07-01", "", "", "", "", "Ja", "Nein", "", "32h (Mo-Fr)", 32, "Nein", "", "Personal", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5103, "Hoffmann", "Vera", "A10103", "A10099", 1350, "Finanzen & Verwaltung", "Ressort Vorstand", "Payroll Specialist", "E3", "Payroll Specialist", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2026-11-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Personal", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5104, "Busch", "Wim", "A10104", "A10088", 1056, "Finanzen & Verwaltung", "Ressort Vorstand", "Syndikusrechtsanwält/in", "E2", "Syndikusrechtsanwält/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2019-09-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Recht", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5105, "Arnold", "Yasmin", "A10105", "A10104", 1056, "Finanzen & Verwaltung", "Ressort Vorstand", "Paralegal", "E3", "Paralegal", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2020-10-01", "2026-06-30", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "Recht", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5106, "Kuhn", "Zoe", "A10106", "A10001", 1796, "Merchandising", "Ressort Vorstand", "Leitung Merchandising", "E1", "Leitung Merchandising", "Muster Sport AG", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2021-11-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Merchandising", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5107, "Winter", "Moritz", "A10107", "A10106", 1576, "Merchandising", "Ressort Vorstand", "Teamleitung Fanshop", "E2", "Teamleitung Fanshop", "Muster Sport AG", "Nicht-Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2022-12-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5108, "Becker", "Lea", "A10108", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Verkäufer/in", "E3", "Verkäufer/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5109, "Albers", "Tobias", "A10109", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Verkäufer/in", "E3", "Verkäufer/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2024-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5110, "Brandt", "Nora", "A10110", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Verkäufer/in", "E3", "Verkäufer/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2014-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5111, "Cordes", "Emil", "A10111", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Aushilfe Fanshop", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2015-04-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5112, "Dietz", "Sophie", "A10112", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Aushilfe Fanshop", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2016-05-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5113, "Engel", "Jan", "A10113", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Aushilfe Fanshop", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2017-06-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5114, "Fuchs", "Mia", "A10114", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Aushilfe Fanshop", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2018-07-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5115, "Graf", "Tim", "A10115", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Aushilfe Fanshop", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2019-08-01", "", "", "", "", "Nein", "Nein", "", "15h (Mo-Fr)", 15, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5116, "Hahn", "Sara", "A10116", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Aushilfe Fanshop", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2020-09-01", "", "", "", "", "Nein", "Nein", "", "15h (Mo-Fr)", 15, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5117, "Imhof", "Leon", "A10117", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Aushilfe Fanshop", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2021-10-01", "", "", "", "", "Nein", "Nein", "", "8h (Mo-Fr)", 8, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5118, "Jansen", "Julia", "A10118", "A10107", 1576, "Merchandising", "Ressort Vorstand", "Aushilfe Fanshop", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2022-11-01", "", "", "", "", "Nein", "Nein", "", "8h (Mo-Fr)", 8, "Nein", "", "Fanshop", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5119, "Kraus", "Max", "A10119", "A10106", 1412, "Merchandising", "Ressort Vorstand", "Teamleitung E-Commerce", "E2", "Teamleitung E-Commerce", "Muster Sport AG", "Nicht-Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2023-12-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "E-Commerce", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5120, "Lorenz", "Hanna", "A10120", "A10119", 1412, "Merchandising", "Ressort Vorstand", "E-Commerce Manager/in", "E3", "E-Commerce Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2024-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "E-Commerce", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5121, "Maier", "Erik", "A10121", "A10119", 1412, "Merchandising", "Ressort Vorstand", "E-Commerce Manager/in", "E3", "E-Commerce Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2014-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "E-Commerce", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5122, "Nowak", "Laura", "A10122", "A10119", 1412, "Merchandising", "Ressort Vorstand", "E-Commerce Manager/in", "E3", "E-Commerce Manager/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2015-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "E-Commerce", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5123, "Ott", "Kai", "A10123", "A10106", 1816, "Merchandising", "Ressort Vorstand", "Teamleitung Logistik", "E2", "Teamleitung Logistik", "Muster Sport AG", "Nicht-Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2016-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Lager", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5124, "Peters", "Anna", "A10124", "A10123", 1816, "Merchandising", "Ressort Vorstand", "Lagerist/in", "E3", "Lagerist/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2017-05-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Lager", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5125, "Quast", "Ben", "A10125", "A10123", 1816, "Merchandising", "Ressort Vorstand", "Lagerist/in", "E3", "Lagerist/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2018-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Lager", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5126, "Roth", "Clara", "A10126", "A10123", 1816, "Merchandising", "Ressort Vorstand", "Aushilfe Lager", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2019-07-01", "", "", "", "", "Nein", "Nein", "", "15h (Mo-Fr)", 15, "Nein", "", "Lager", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5127, "Seidel", "David", "A10127", "A10123", 1816, "Merchandising", "Ressort Vorstand", "Aushilfe Lager", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2020-08-01", "", "", "", "", "Nein", "Nein", "", "15h (Mo-Fr)", 15, "Nein", "", "Lager", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5128, "Thiel", "Elif", "A10128", "A10123", 1816, "Merchandising", "Ressort Vorstand", "Aushilfe Lager", "E3", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2021-09-01", "", "", "", "", "Nein", "Nein", "", "15h (Mo-Fr)", 15, "Nein", "", "Lager", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5129, "Ulrich", "Felix", "A10129", "A10001", 1726, "IT", "Ressort Vorstand", "Leitung IT", "E1", "Leitung IT", "Muster Sport AG", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2022-10-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "IT", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5130, "Vogt", "Greta", "A10130", "A10129", 1726, "IT", "Ressort Vorstand", "IT-Administrator/in", "E2", "IT-Administrator/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-11-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "IT", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5131, "Weber", "Hannes", "A10131", "A10129", 1726, "IT", "Ressort Vorstand", "IT-Administrator/in", "E2", "IT-Administrator/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2024-12-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "IT", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5132, "Yilmaz", "Ida", "A10132", "A10129", 1726, "IT", "Ressort Vorstand", "IT-Administrator/in", "E2", "IT-Administrator/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2014-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "IT", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5133, "Ziegler", "Jonas", "A10133", "A10129", 1726, "IT", "Ressort Vorstand", "Softwareentwickler/in", "E2", "Softwareentwickler/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2015-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "IT", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5134, "Berger", "Katrin", "A10134", "A10129", 1726, "IT", "Ressort Vorstand", "Softwareentwickler/in", "E2", "Softwareentwickler/in", "Muster Sport AG", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2016-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "IT", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5135, "Kaiser", "Lukas", "A10135", "A10129", 1726, "IT", "Ressort Vorstand", "Werkstudent/in IT", "E2", "Aushilfe", "Muster Sport AG", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2017-04-01", "", "", "", "", "Nein", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "IT", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"]], "klein": [["Benutzerkennung", "Name", "Vorname", "Personalnummer", "Vorgesetzter-Personalnummer", "Organisationseinheiten-Schlüssel", "Orga-Einheit, Level 1", "Orga-Einheit Vorstandsressort", "Position", "Orga-Ebene der Position", "Titel laut Vertrag", "Gesellschaft / Mandant", "Sport / Nicht-Sport", "Hierarchiefeld", "Sport: Start aktueller Vertrag", "Arbeitsverhältnis", "Status (NLZ)", "Geburtsdatum", "Eintrittsdatum", "Austrittsdatum", "Sport: Start aktueller Vertrag", "E-Mail", "DATEV-Personalnummer", "Berechtigung - Darf Homeoffice beantragen", "Berechtigung - Kinderdaten bearbeiten", "Geschlecht", "Arbeitsplan", "Wochenarbeitsstunden", "Hat Dienstwagenanspruch", "Anrede", "Name der Organisationseinheit", "Betriebsstätte-Schlüssel", "Hat Dienstwagen", "Urlaubsart-Schlüssel", "Wochenarbeitstage", "Zeiterfassungsart", "Zeiterfassungsart-Schlüssel", "Stundenlohn"], [5001, "Roth", "Stefan", "S10001", "", 1811, "Geschäftsführung", "Ressort Vorstand", "Geschäftsführung", "E0", "Geschäftsführung", "Muster Service GmbH", "Nicht-Sport", "Vorstand / Executive Board", "", "Vollzeit", "n/a", "", "2015-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Geschäftsführung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5002, "Seidel", "Tina", "S10002", "S10001", 1415, "Geschäftsführung", "Ressort Vorstand", "Buchhaltung", "E1", "Buchhaltung", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2016-03-01", "", "", "", "", "Ja", "Nein", "", "20h (Mo-Fr)", 20, "Nein", "", "Verwaltung", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5003, "Thiel", "Uwe", "S10003", "S10001", 1108, "Events", "Ressort Vorstand", "Leitung Events", "E1", "Leitung Events", "Muster Service GmbH", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2017-04-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Events", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5004, "Ulrich", "Vera", "S10004", "S10003", 1108, "Events", "Ressort Vorstand", "Eventmanager/in", "E2", "Eventmanager/in", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2018-05-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Events", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5005, "Vogt", "Wim", "S10005", "S10003", 1108, "Events", "Ressort Vorstand", "Eventmanager/in", "E2", "Eventmanager/in", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2019-06-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Events", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5006, "Weber", "Yasmin", "S10006", "S10003", 1108, "Events", "Ressort Vorstand", "Eventmanager/in", "E2", "Eventmanager/in", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2020-07-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Events", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5007, "Yilmaz", "Zoe", "S10007", "S10003", 1108, "Events", "Ressort Vorstand", "Aushilfe Events", "E2", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2021-08-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "Events", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5008, "Ziegler", "Moritz", "S10008", "S10003", 1108, "Events", "Ressort Vorstand", "Aushilfe Events", "E2", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2022-09-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "Events", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5009, "Berger", "Lea", "S10009", "S10003", 1108, "Events", "Ressort Vorstand", "Aushilfe Events", "E2", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2023-10-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "Events", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5010, "Kaiser", "Tobias", "S10010", "S10003", 1108, "Events", "Ressort Vorstand", "Aushilfe Events", "E2", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2024-11-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "Events", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5011, "Lang", "Nora", "S10011", "S10001", 1498, "Gastronomie", "Ressort Vorstand", "Leitung Gastronomie", "E1", "Leitung Gastronomie", "Muster Service GmbH", "Nicht-Sport", "Abteilungsleitung / Head of", "", "Vollzeit", "n/a", "", "2014-12-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Gastronomie", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5012, "Möller", "Emil", "S10012", "S10011", 1868, "Gastronomie", "Ressort Vorstand", "Teamleitung Küche", "E2", "Teamleitung Küche", "Muster Service GmbH", "Nicht-Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2015-01-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Küche", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5013, "Schulte", "Sophie", "S10013", "S10012", 1868, "Gastronomie", "Ressort Vorstand", "Koch/Köchin", "E3", "Koch/Köchin", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2016-02-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Küche", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5014, "Hoffmann", "Jan", "S10014", "S10012", 1868, "Gastronomie", "Ressort Vorstand", "Koch/Köchin", "E3", "Koch/Köchin", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2017-03-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Küche", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5015, "Busch", "Mia", "S10015", "S10012", 1868, "Gastronomie", "Ressort Vorstand", "Koch/Köchin", "E3", "Koch/Köchin", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Teilzeit", "n/a", "", "2018-04-01", "", "", "", "", "Ja", "Nein", "", "30h (Mo-Fr)", 30, "Nein", "", "Küche", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5016, "Arnold", "Tim", "S10016", "S10012", 1868, "Gastronomie", "Ressort Vorstand", "Aushilfe Küche", "E3", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2019-05-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Küche", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5017, "Kuhn", "Sara", "S10017", "S10012", 1868, "Gastronomie", "Ressort Vorstand", "Aushilfe Küche", "E3", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2020-06-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Küche", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5018, "Winter", "Leon", "S10018", "S10011", 1694, "Gastronomie", "Ressort Vorstand", "Teamleitung Service", "E2", "Teamleitung Service", "Muster Service GmbH", "Nicht-Sport", "Teamleitung / Team Lead", "", "Vollzeit", "n/a", "", "2021-07-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Service", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5019, "Becker", "Julia", "S10019", "S10018", 1694, "Gastronomie", "Ressort Vorstand", "Servicekraft", "E3", "Servicekraft", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2022-08-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Service", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5020, "Albers", "Max", "S10020", "S10018", 1694, "Gastronomie", "Ressort Vorstand", "Servicekraft", "E3", "Servicekraft", "Muster Service GmbH", "Nicht-Sport", "Mitarbeiter:in / Employee", "", "Vollzeit", "n/a", "", "2023-09-01", "", "", "", "", "Ja", "Nein", "", "40h (Mo-Fr)", 40, "Nein", "", "Service", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5021, "Brandt", "Hanna", "S10021", "S10018", 1694, "Gastronomie", "Ressort Vorstand", "Aushilfe Service", "E3", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2024-10-01", "", "", "", "", "Nein", "Nein", "", "8h (Mo-Fr)", 8, "Nein", "", "Service", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5022, "Cordes", "Erik", "S10022", "S10018", 1694, "Gastronomie", "Ressort Vorstand", "Aushilfe Service", "E3", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2014-11-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "Service", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5023, "Dietz", "Laura", "S10023", "S10018", 1694, "Gastronomie", "Ressort Vorstand", "Aushilfe Service", "E3", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2015-12-01", "", "", "", "", "Nein", "Nein", "", "10h (Mo-Fr)", 10, "Nein", "", "Service", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5024, "Engel", "Kai", "S10024", "S10018", 1694, "Gastronomie", "Ressort Vorstand", "Aushilfe Service", "E3", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2016-01-01", "", "", "", "", "Nein", "Nein", "", "12h (Mo-Fr)", 12, "Nein", "", "Service", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"], [5025, "Fuchs", "Anna", "S10025", "S10018", 1694, "Gastronomie", "Ressort Vorstand", "Aushilfe Service", "E3", "Aushilfe", "Muster Service GmbH", "Nicht-Sport", "Aushilfe & Werkstudent:in / Temp & Working Student", "", "Geringfügig beschäftigt", "n/a", "", "2017-02-01", "", "", "", "", "Nein", "Nein", "", "15h (Mo-Fr)", 15, "Nein", "", "Service", "Standort Mitte", "Nein", "30", "", "Zeiterfassung Standard", 1, "n/a"]]}/*DEMO-DATEN-ENDE*/;</script>
 <script>
 (() => {
   "use strict";
@@ -144,239 +242,353 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const PAPER = { A3:{w:420,h:297}, A4:{w:297,h:210} };
   const MARGIN_MM = 10, MM = 96/25.4;
-  const HEADER = ["N-1 (Person)","N-2 (Person)","N-3 (Person)","Org-Einheit 1","Org-Einheit 2","Org-Einheit 3",
-                  "Mitarbeitername","Summe von FTE","Personalfall","Organigramm final"];
-  const TEMP_RE = /prakti|aushilf/i;            // Praktikant/innen & Aushilfen -> blau
+  const TEMP_RE = /aushilf|werkstud|temp\b|prakti|intern\b/i;
+  const fmtNum = (v, d = 2) => v.toLocaleString("de-DE", {maximumFractionDigits:d});
+  const fmtFix = v => v.toLocaleString("de-DE", {minimumFractionDigits:2, maximumFractionDigits:2});
+  const fmtDate = d => d.toLocaleDateString("de-DE");
   const MODES = {
-    fte:  {key:"fte",  unit:"FTE",   title:"FTE insgesamt",   fmt: v => fmtNum(v)},
-    kopf: {key:"kopf", unit:"Köpfe", title:"Köpfe insgesamt", fmt: v => String(v)}
+    fte:  {key:"fte",  kicker:"Analytics · FTE",   unit:"FTE"},
+    kopf: {key:"kopf", kicker:"Analytics · Köpfe", unit:"Köpfe"},
+    komm: {key:"komm", kicker:"Kommunikation",     unit:""}
   };
-  const fmtNum = (v, fixed) => v.toLocaleString("de-DE", fixed ? {minimumFractionDigits:2, maximumFractionDigits:2} : {maximumFractionDigits:2});
-  let rawRows = [], sourceName = "Testdaten (fiktiv)";
+  let records = [], sourceName = "", isDemo = true;
 
-  /* ---------- Excel einlesen: Kopfzeile suchen, Spalten zuordnen ---------- */
+  /* ---------- Excel einlesen ---------- */
   const norm = s => String(s ?? "").toLowerCase().replace(/\s+/g, " ").trim();
-  const MATCH = {
-    n1: h => /^n\s*-\s*1\b/.test(h), n2: h => /^n\s*-\s*2\b/.test(h), n3: h => /^n\s*-\s*3\b/.test(h),
-    org1: h => /org.*einheit\s*1/.test(h), org2: h => /org.*einheit\s*2/.test(h), org3: h => /org.*einheit\s*3/.test(h),
-    name: h => h.includes("mitarbeiter") || h === "name",
-    fte: h => /\bfte\b/.test(h), pf: h => h.includes("personalfall"), final: h => h.includes("organigramm")
+  const COLS = {
+    pnr:  h => h === "personalnummer",
+    mgr:  h => h.includes("vorgesetzte") && h.includes("personalnummer"),
+    last: h => h === "name" || h === "nachname",
+    first:h => h === "vorname",
+    area: h => /orga.?einheit.*level ?1/.test(h),
+    ae:   h => h.includes("name der organisationseinheit"),
+    pos:  h => h === "position",
+    ges:  h => h.startsWith("gesellschaft"),
+    hf:   h => h.startsWith("hierarchiefeld"),
+    av:   h => h.startsWith("arbeitsverhältnis"),
+    ein:  h => h.startsWith("eintrittsdatum"),
+    aus:  h => h.startsWith("austrittsdatum"),
+    hours:h => h.startsWith("wochenarbeitsstunden")
   };
-  function rowsFromAoa(aoa){
-    const hr = aoa.findIndex(r => r.some(c => MATCH.name(norm(c))) && r.some(c => MATCH.final(norm(c))));
+  function toDate(v){
+    if(v instanceof Date) return isNaN(v) ? null : v;
+    if(typeof v === "number") return new Date(Math.round((v - 25569) * 86400000));
+    const s = String(v ?? "").trim(); if(!s) return null;
+    let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if(m) return new Date(+m[1], m[2]-1, +m[3]);
+    m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})/); if(m) return new Date(m[3].length === 2 ? 2000 + +m[3] : +m[3], m[2]-1, +m[1]);
+    return null;
+  }
+  function parseAoa(aoa){
+    const hr = aoa.findIndex(r => r.some(c => COLS.pnr(norm(c))) && r.some(c => COLS.mgr(norm(c))));
     if(hr < 0) return null;
     const head = aoa[hr].map(norm), idx = {};
-    for(const [k, f] of Object.entries(MATCH)) idx[k] = head.findIndex(f);
+    for(const [k, f] of Object.entries(COLS)) idx[k] = head.findIndex(f);
     const get = (r, k) => idx[k] >= 0 ? r[idx[k]] : "";
-    return aoa.slice(hr + 1).map((r, i) => {
-      const o = {line: hr + i + 2};
-      for(const k of Object.keys(MATCH)) o[k] = typeof get(r,k) === "number" ? get(r,k) : String(get(r,k) ?? "").trim();
-      return o;
+    const str = (r, k) => String(get(r, k) ?? "").trim();
+    const out = [];
+    aoa.slice(hr + 1).forEach((r, i) => {
+      const pnr = str(r, "pnr"); if(!pnr) return;
+      const h = get(r, "hours");
+      out.push({line: hr + i + 2, pnr, mgr: str(r, "mgr"), first: str(r, "first"), last: str(r, "last"),
+        area: str(r, "area"), ae: str(r, "ae"), pos: str(r, "pos"), ges: str(r, "ges"), hf: str(r, "hf"), av: str(r, "av"),
+        ein: toDate(get(r, "ein")), aus: toDate(get(r, "aus")),
+        hours: typeof h === "number" ? h : parseFloat(String(h).replace(",", "."))});
     });
+    return {rows: out, missing: Object.keys(COLS).filter(k => idx[k] < 0)};
   }
-  const demoAoa = () => [HEADER, ...(window.DEMO_DATA || []).map(o => HEADER.map(h => o[h] ?? ""))];
 
-  /* ---------- Datenmodell: Einheit (Org-Einheit 1) > Bereich (Organigramm final) > Org-Einheit > Person ---------- */
-  function buildModel(rows){
-    const warn = [], units = new Map(), seen = new Map();
-    const subCol = $("#subcol").value;
-    let lastOrg1 = "";
-    for(const r of rows){
-      const name = String(r.name);
-      if(!name || /ergebnis|gesamt|^total|grand total/i.test(name)) continue;   // Pivot-Summenzeilen überspringen
-      const org1 = String(r.org1) || lastOrg1; lastOrg1 = org1;
-      const unitName = (org1.split(" / ")[0] || "Organisation").trim();
-      let fte = typeof r.fte === "number" ? r.fte : parseFloat(String(r.fte).replace(",", "."));
-      if(isNaN(fte)){ fte = 0; warn.push(`${name} (Zeile ${r.line}): keine FTE-Angabe – als 0 gezählt.`); }
-      let area = String(r.final);
-      if(!area){ area = "Ohne Zuordnung"; warn.push(`${name} (Zeile ${r.line}): „Organigramm final“ ist leer.`); }
-      const temp = TEMP_RE.test(`${r.org2} ${r.org3} ${r.pf}`);
-      let sub = shortUnit(String(r[subCol]));
-      if(!sub || TEMP_RE.test(sub) || sub.toLowerCase() === area.toLowerCase()) sub = "";   // direkt unter dem Bereich
+  /* ---------- Auswahl-Felder ---------- */
+  const opt = (v, label, sel) => `<option value="${esc(v)}"${v === sel ? " selected" : ""}>${esc(label)}</option>`;
+  function fillSelects(){
+    const day = stichtag(), act = records.filter(r => isActive(r, day));
+    const gesList = [...new Set(act.map(r => r.ges).filter(Boolean))];
+    const g = $("#ges").value;
+    $("#ges").innerHTML = (gesList.length > 1 ? opt("", "Alle Gesellschaften", g) : "") + gesList.map(x => opt(x, x, g)).join("");
+    const inGes = act.filter(r => !$("#ges").value || r.ges === $("#ges").value);
+    const counts = new Map(); inGes.forEach(r => r.area && counts.set(r.area, (counts.get(r.area) || 0) + 1));
+    const a = $("#area").value;
+    $("#area").innerHTML = opt("", "Gesamtorganisation", a) + [...counts].map(([x, n]) => opt(x, `${x} (${n})`, a)).join("");
+  }
+  const stichtag = () => toDate($("#stichtag").value) || new Date();
+  const isActive = (r, d) => (!r.ein || r.ein <= d) && (!r.aus || r.aus >= d);
 
-      if(!units.has(unitName)) units.set(unitName, {name:unitName, areas:new Map(), fte:0, kopf:0});
-      const u = units.get(unitName);
-      if(!u.areas.has(area)) u.areas.set(area, {name:area, subs:new Map([["", []]]), fte:0, kopf:0});
-      const a = u.areas.get(area);
-      if(!a.subs.has(sub)) a.subs.set(sub, []);
-      a.subs.get(sub).push({name, fte, temp});
-      a.fte += fte; a.kopf += 1; u.fte += fte; u.kopf += 1;
-      const key = unitName + "|" + name;
-      if(seen.has(key) && seen.get(key) !== area) warn.push(`${name} steht in mehreren Bereichen (${seen.get(key)} / ${area}) und wird bei den Köpfen doppelt gezählt.`);
-      seen.set(key, area);
+  /* ---------- Hierarchie aufbauen ---------- */
+  function buildTree(){
+    const warn = [], day = stichtag(), base = parseFloat($("#fteh").value) || 40;
+    const tempMode = $("#temp").value, ges = $("#ges").value, area = $("#area").value;
+    const all = new Map();
+    for(const r of records){
+      if(all.has(r.pnr)){ warn.push(`Personalnummer ${r.pnr} doppelt (Zeile ${r.line}) – zweiter Eintrag ignoriert.`); continue; }
+      all.set(r.pnr, r);
     }
-    return {units:[...units.values()], warn};
-  }
-  const shortUnit = s => { const p = s.split(/\s[-–]\s/); return (p.length > 1 ? p.slice(1).join(" - ") : s).trim(); };
-
-  /* ---------- Layout: Org-Einheiten je Bereich auf Spalten verteilen (passend zum Papierformat) ---------- */
-  const COL_W = 232, AREA_PAD = 28, SUB_H = 30, P_H = 26, BLK_GAP = 12, TOP_H = 30 + 22 + 22 + 26 + 10;
-  function blocksOf(area){
-    return [...area.subs].filter(([, ps]) => ps.length).map(([sub, ps]) => ({sub, persons:ps}));
-  }
-  function pack(blocks, maxH){
-    const cols = [[]]; let h = 0;
-    const bh = b => (b.sub ? SUB_H : 0) + b.persons.length * P_H;
-    for(let b of blocks){
-      while(b){
-        const gap = cols.at(-1).length ? BLK_GAP : 0;
-        if(h + gap + bh(b) <= maxH){ cols.at(-1).push(b); h += gap + bh(b); b = null; continue; }
-        // Einheiten nur aufteilen, wenn sie auch in eine leere Spalte nicht passen
-        const room = Math.floor((maxH - h - gap - (b.sub ? SUB_H : 0)) / P_H);
-        if(bh(b) > maxH && room >= 3){
-          cols.at(-1).push({...b, persons:b.persons.slice(0, room)});
-          b = {...b, cont:true, persons:b.persons.slice(room)};
-        } else if(!cols.at(-1).length){
-          const n = Math.max(1, Math.floor((maxH - (b.sub ? SUB_H : 0)) / P_H));
-          cols.at(-1).push({...b, persons:b.persons.slice(0, n)});
-          b = b.persons.length > n ? {...b, cont:true, persons:b.persons.slice(n)} : null;
-        }
-        cols.push([]); h = 0;
+    let inactive = 0;
+    const incl = new Map();
+    for(const r of all.values()){
+      if(!isActive(r, day)){ inactive++; continue; }
+      if(ges && r.ges !== ges) continue;
+      if(area && r.area !== area) continue;
+      const temp = TEMP_RE.test(r.hf) || (!r.hf && /geringfüg|prakti|werkstud/i.test(r.av));
+      if(temp && tempMode === "hide") continue;
+      if(isNaN(r.hours)) warn.push(`${r.first} ${r.last} (${r.pnr}): keine Wochenarbeitsstunden – als 0 FTE gezählt.`);
+      incl.set(r.pnr, {...r, temp, fte: isNaN(r.hours) ? 0 : r.hours / base, kids: []});
+    }
+    // Vorgesetzte suchen; nicht enthaltene Vorgesetzte werden übersprungen (nächsthöhere Ebene)
+    const roots = [];
+    for(const p of incl.values()){
+      let m = p.mgr, seen = new Set([p.pnr]), boss = null;
+      while(m && !seen.has(m)){
+        seen.add(m);
+        if(incl.has(m)){ boss = incl.get(m); break; }
+        const up = all.get(m);
+        if(!up){ if(!area && !ges) warn.push(`${p.first} ${p.last} (${p.pnr}): Vorgesetzte/r ${m} nicht in der Datei.`); break; }
+        m = up.mgr;
       }
+      if(boss){ p.parent = boss; boss.kids.push(p); } else roots.push(p);
     }
-    return cols.filter(c => c.length);
-  }
-  function chooseLayout(unit){
-    const [w, h] = printArea();
-    const areas = [...unit.areas.values()].map(a => ({a, blocks:blocksOf(a)}));
-    const full = Math.max(...areas.map(x => x.blocks.reduce((s, b) => s + (b.sub ? SUB_H : 0) + b.persons.length * P_H + BLK_GAP, 0)));
-    let best = null;
-    for(let maxH = SUB_H + 3 * P_H; maxH <= full + P_H; maxH += P_H){
-      const packed = areas.map(x => pack(x.blocks, maxH));
-      const width = packed.reduce((s, c) => s + Math.max(1, c.length) * COL_W + AREA_PAD, 0);
-      const height = TOP_H + Math.max(...packed.map(c => Math.max(0, ...c.map(col => col.reduce((s, b, i) => s + (i ? BLK_GAP : 0) + (b.sub ? SUB_H : 0) + b.persons.length * P_H, 0)))));
-      const z = Math.min(w / width, (h - 150) / height);
-      if(!best || z > best.z * 1.02) best = {z, packed};
+    let root;
+    if(roots.length === 1) root = roots[0];
+    else {
+      if(roots.length > 1 && !area) warn.push(`${roots.length} Personen ohne Vorgesetzte/n in der Auswahl – sie werden unter einer gemeinsamen Spitze gezeigt.`);
+      root = {virtual:true, first:"", last:"", pos: ges || [...new Set([...incl.values()].map(p => p.ges))][0] || "Organisation", kids:roots, fte:0, temp:false};
+      roots.forEach(r => r.parent = root);
     }
-    return areas.map((x, i) => ({area:x.a, cols:best.packed[i]}));
-  }
-  function printArea(){
-    const p = PAPER[$("#format").value];
-    return [(p.w - 2*MARGIN_MM) * MM, (p.h - 2*MARGIN_MM) * MM];
-  }
-
-  /* ---------- Rendering ---------- */
-  function orgChart(unit, layout, mode){
-    const v = x => mode.fmt(x[mode.key]);
-    const person = p => `<div class="box p${p.temp ? " temp" : ""}" data-s="${esc(p.name.toLowerCase())}"><span>${esc(p.name)}</span>${mode.key === "fte" ? `<b>${fmtNum(p.fte)}</b>` : ""}</div>`;
-    const subVal = ps => mode.key === "fte" ? fmtNum(ps.reduce((s, p) => s + p.fte, 0)) : String(ps.length);
-    const block = (b, area) => {
-      const all = area.subs.get(b.sub);
-      const head = b.sub ? `<div class="box sub${b.cont ? " cont" : ""}"><span>${esc(b.sub)}${b.cont ? " (Forts.)" : ""}</span>${b.cont ? "" : `<b>${subVal(all)}</b>`}</div>` : "";
-      return `<div class="blk${b.sub ? "" : " direct"}">${head}${b.persons.map(person).join("")}</div>`;
+    const order = new Map([...all.keys()].map((k, i) => [k, i]));
+    const walk = (n, d) => {
+      n.depth = d; n.maxDepth = d; n.kids.sort((a, b) => order.get(a.pnr) - order.get(b.pnr));
+      n.tKopf = 0; n.tFte = 0; n.tTemp = 0; n.dFte = 0; n.leaders = n.kids.length ? 1 : 0;
+      for(const k of n.kids){
+        walk(k, d + 1);
+        n.tKopf += 1 + k.tKopf; n.tFte += k.fte + k.tFte; n.tTemp += (k.temp ? 1 : 0) + k.tTemp; n.dFte += k.fte;
+        n.maxDepth = Math.max(n.maxDepth, k.maxDepth); n.leaders += k.leaders;
+      }
     };
-    const areas = layout.map(({area, cols}) => `<li><div style="width:${Math.max(1, cols.length) * COL_W - 12}px;display:flex;flex-direction:column">
-        <div class="box n1"><span>${esc(area.name)}</span><b>${v(area)}</b></div>
-        <div class="cols">${cols.map(col => `<div class="col">${col.map(b => block(b, area)).join("")}</div>`).join("")}</div>
-      </div></li>`).join("");
-    return `<ul><li><div class="box root"><span>${esc(unit.name)}</span><b>${v(unit)}</b></div><ul>${areas}</ul></li></ul>`;
+    walk(root, 0);
+    return {root, warn, inactive, count: incl.size};
+  }
+  // Kennzahlen inkl. der Person selbst
+  const self = n => ({kopf: n.tKopf + (n.virtual ? 0 : 1), fte: n.tFte + (n.virtual ? 0 : n.fte), temp: n.tTemp + (n.temp ? 1 : 0)});
+
+  /* ---------- Darstellung ---------- */
+  function label(p){
+    const mode = $("#names").value, pos = $("#showpos").checked;
+    if(p.virtual) return {n: p.pos, f: ""};
+    const full = `${p.first} ${p.last}`.trim();
+    if(mode === "anon") return {n: p.pos || "Mitarbeiter/in", f: ""};
+    const name = mode === "init" ? [p.first, p.last].filter(Boolean).map(s => s[0] + ".").join(" ") : full;
+    return {n: name || p.pnr, f: pos ? p.pos : ""};
+  }
+  const searchKey = p => esc(`${p.first} ${p.last} ${p.pos}`.toLowerCase());
+
+  function card(n, lvl, mode, cls = "", collapsed = false){
+    const L = label(n), direct = n.kids.length;
+    let badge = "", foot = "";
+    if(direct && mode.key === "fte"){
+      badge = `<span class="badge" title="direkt unterstellt: ${fmtNum(n.dFte)} FTE">${fmtNum(n.dFte, 1)}</span>`;
+      foot = `<div class="t"><span>Direkt <b>${fmtNum(n.dFte)}</b></span><span>Team <b>${fmtNum(n.tFte)} FTE</b></span></div>`;
+    } else if(direct && mode.key === "kopf"){
+      badge = `<span class="badge" title="${direct} direkt unterstellt">${direct}</span>`;
+      foot = `<div class="t"><span>Direkt <b>${direct}</b></span><span>Team <b>${n.tKopf} Köpfe</b></span></div>`;
+    }
+    return `<div class="card lvl-${Math.min(lvl, 6)}${n.temp ? " temp" : ""} ${cls}" data-s="${searchKey(n)}">${badge}
+      <div class="n">${esc(L.n)}</div>${L.f ? `<div class="f">${esc(L.f)}</div>` : (n.temp ? `<div class="f"></div>` : "")}${foot}${collapsed ? `<div class="more">+ ${n.tKopf} Person${n.tKopf > 1 ? "en" : ""} darunter</div>` : ""}</div>`;
+  }
+  function membersBox(list, mode){
+    const sum = $("#temp").value === "sum";
+    const show = sum ? list.filter(m => !m.temp) : list, temps = sum ? list.filter(m => m.temp) : [];
+    const row = m => { const L = label(m);
+      return `<div class="member${m.temp ? " temp" : ""}" data-s="${searchKey(m)}"><div><div class="n">${esc(L.n)}</div>${L.f || m.temp ? `<div class="f">${esc(L.f)}</div>` : ""}</div>${mode.key === "fte" ? `<span class="v">${fmtNum(m.fte)}</span>` : ""}</div>`; };
+    let html = show.map(row).join("");
+    if(temps.length) html += `<div class="member temp sum"><div><div class="n">+ ${temps.length} Aushilfe${temps.length > 1 ? "n" : ""} / Werkstud.</div></div>${mode.key === "fte" ? `<span class="v">${fmtNum(temps.reduce((s, m) => s + m.fte, 0))}</span>` : ""}</div>`;
+    return `<div class="members">${html}</div>`;
+  }
+  // Mitarbeitende ohne Reports werden gebündelt; ab Ebene hangFrom eingerückt statt verzweigt.
+  function subtree(n, lvl, hangFrom, mode, cls = "", limit = 0){
+    if(!n.kids.length) return card(n, lvl, mode, cls);
+    if(limit && lvl >= limit - 1) return card(n, lvl, mode, cls, true);
+    const leaves = n.kids.filter(k => !k.kids.length), branches = n.kids.filter(k => k.kids.length);
+    if(lvl >= hangFrom){
+      const items = branches.map(b => `<div class="h-item">${subtree(b, lvl + 1, hangFrom, mode, "", limit)}</div>`);
+      if(leaves.length) items.unshift(`<div class="h-item">${membersBox(leaves, mode)}</div>`);
+      return `<div class="hnode">${card(n, lvl, mode, cls)}<div class="hang">${items.join("")}</div></div>`;
+    }
+    const items = branches.map(b => `<li>${subtree(b, lvl + 1, hangFrom, mode, "", limit)}</li>`);
+    if(leaves.length) items.unshift(`<li>${membersBox(leaves, mode)}</li>`);
+    return `${n.virtual ? `<div class="card ceo"><div class="n">${esc(n.pos)}</div></div>` : card(n, lvl, mode, cls)}<ul>${items.join("")}</ul>`;
   }
 
-  function waterfall(unit){
-    const areas = [...unit.areas.values()];
-    const labelW = 230, panelW = 470, gap = 70, rowH = 84, barH = 44, top = 80;
-    const H = top + (areas.length + 1) * rowH + 10, W = labelW + 2 * panelW + gap;
-    const rows = [...areas.map(a => ({name:a.name, fte:a.fte, kopf:a.kopf})), {name:"Gesamt", fte:unit.fte, kopf:unit.kopf, total:true}];
+  const groupName = n => n.ae && n.ae !== n.parent?.ae ? n.ae : (n.area && n.area !== n.parent?.area ? n.area : (n.pos || label(n).n));
+  function groupsOf(root){
+    const g = [], stab = {name: root.virtual ? "Ohne Bereich" : "Leitung & Stab", kopf: 0, fte: 0, temp: 0};
+    if(!root.virtual){ stab.kopf = 1; stab.fte = root.fte; stab.temp = root.temp ? 1 : 0; }
+    for(const k of root.kids){
+      if(k.kids.length) g.push({name: groupName(k), node: k, ...self(k)});
+      else { stab.kopf++; stab.fte += k.fte; stab.temp += k.temp ? 1 : 0; }
+    }
+    return stab.kopf ? [stab, ...g] : g;
+  }
+
+  function waterfall(root){
+    const groups = groupsOf(root), tot = self(root);
+    const labelW = 250, panelW = 470, gap = 70, rowH = Math.max(46, Math.min(70, 420 / (groups.length + 1))), barH = rowH * .58, top = 70;
+    const H = top + (groups.length + 1) * rowH + 8, W = labelW + 2 * panelW + gap;
+    const rows = [...groups, {name:"Gesamt", ...tot, total:true}];
     let svg = "";
-    rows.forEach((r, i) => {
-      const y = top + i * rowH + (rowH - barH) / 2 + barH / 2 + 5;
-      svg += `<text x="${labelW - 18}" y="${y}" text-anchor="end" font-size="16" ${r.total ? 'font-weight="700"' : ""} fill="#1F1F1F">${esc(r.name)}</text>`;
-    });
-    [["fte", "In FTE", v => fmtNum(v, true)], ["kopf", "In Köpfen", v => String(v)]].forEach(([k, title, f], pi) => {
-      const x0 = labelW + pi * (panelW + gap), s = (panelW - 80) / (unit[k] || 1);
-      svg += `<text x="${x0}" y="30" font-size="17" font-weight="700" fill="#111">${title}</text>
-              <line x1="${x0}" x2="${x0 + panelW - 30}" y1="46" y2="46" stroke="#111" stroke-width="1"/>
-              <line x1="${x0}" x2="${x0}" y1="${top - 6}" y2="${H - 4}" stroke="#111" stroke-width="1"/>`;
+    rows.forEach((r, i) => svg += `<text x="${labelW - 16}" y="${top + i * rowH + rowH / 2 + 5}" text-anchor="end" font-size="15" ${r.total ? 'font-weight="700"' : ""} fill="#2E2E33">${esc(r.name)}</text>`);
+    [["fte", "In FTE", fmtFix], ["kopf", "In Köpfen", v => String(v)]].forEach(([k, title, f], pi) => {
+      const x0 = labelW + pi * (panelW + gap), s = (panelW - 80) / (tot[k] || 1);
+      svg += `<text x="${x0}" y="26" font-size="16" font-weight="700" fill="#9E3B3B">${title}</text>
+        <line x1="${x0}" x2="${x0 + panelW - 30}" y1="40" y2="40" stroke="#F0C4C4" stroke-width="2"/>
+        <line x1="${x0}" x2="${x0}" y1="${top - 4}" y2="${H - 4}" stroke="#A1A1AA" stroke-width="1"/>`;
       let cum = 0;
       rows.forEach((r, i) => {
-        const val = r[k], y = top + i * rowH + (rowH - barH) / 2;
-        const start = r.total ? 0 : cum, x = x0 + start * s, bw = Math.max(val * s, 2);
-        svg += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}" fill="${r.total ? "#111" : "#7F7F7F"}"/>`;
-        const label = f(val), tw = label.length * 8.6;
-        svg += bw >= tw + 16 && !r.total
-          ? `<text x="${x + bw / 2}" y="${y + barH / 2 + 5.5}" text-anchor="middle" font-size="15" fill="#fff">${label}</text>`
-          : `<text x="${x + bw + 7}" y="${y + barH / 2 + 5.5}" font-size="15" ${r.total ? 'font-weight="700"' : ""} fill="#111">${label}</text>`;
-        if(!r.total){
-          cum += val;
-          const xe = x0 + cum * s;
-          svg += `<line x1="${xe}" x2="${xe}" y1="${y + barH}" y2="${y + rowH}" stroke="#111" stroke-width="1" stroke-dasharray="2 2"/>`;
-        }
+        const val = r[k], y = top + i * rowH + (rowH - barH) / 2, x = x0 + (r.total ? 0 : cum) * s, bw = Math.max(val * s, 2);
+        svg += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}" rx="3" fill="${r.total ? "#9E3B3B" : "#E39A9A"}"/>`;
+        const t = f(val), tw = t.length * 8.4;
+        svg += bw >= tw + 14 && !r.total
+          ? `<text x="${x + bw / 2}" y="${y + barH / 2 + 5}" text-anchor="middle" font-size="14" font-weight="600" fill="#5E2323">${t}</text>`
+          : `<text x="${x + bw + 6}" y="${y + barH / 2 + 5}" font-size="14" font-weight="${r.total ? 700 : 600}" fill="#2E2E33">${t}</text>`;
+        if(!r.total){ cum += val; const xe = x0 + cum * s;
+          svg += `<line x1="${xe}" x2="${xe}" y1="${y + barH}" y2="${y + rowH}" stroke="#A1A1AA" stroke-dasharray="2 2"/>`; }
       });
     });
-    return `<svg class="wf" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Aufbau nach Bereichen in FTE und Köpfen">${svg}</svg>`;
+    const tr = r => `<tr${r.total ? ' class="total"' : ""}><td>${esc(r.name)}</td><td>${r.kopf}</td><td>${fmtFix(r.fte)}</td><td>${r.kopf - r.temp}</td><td>${r.temp}</td><td>${r.kopf ? fmtFix(r.fte / r.kopf) : "–"}</td></tr>`;
+    return `<svg class="wf" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Aufbau je Bereich in FTE und Köpfen">${svg}</svg>
+      <table class="kpi"><thead><tr><th>Bereich</th><th>Köpfe</th><th>FTE</th><th>Festangestellte</th><th>Aushilfen / Werkstud.</th><th>Ø FTE je Kopf</th></tr></thead>
+      <tbody>${rows.map(tr).join("")}</tbody></table>`;
   }
 
-  function legend(mode){
-    const u = mode.unit;
-    return `<div class="legend">
-      <span class="chip k">N</span><span>= ${u} gesamt</span>
-      <span class="chip d">N</span><span>= ${u} je Bereich (N-1, summiert)</span>
-      <span class="chip l">N</span><span>= ${u} je Org-Einheit</span>
-      <span class="chip p">Name</span><span>= Mitarbeiter/in</span>
-      <span class="chip b">Name</span><span>= Praktikant/in / Aushilfe</span></div>`;
+  /* ---------- Seiten ---------- */
+  let SHEETS = [];
+  function facts(n, mode){
+    const s = self(n);
+    if(mode.key === "komm") return [["Personen", s.kopf]];
+    const f = [["Köpfe", s.kopf], ["FTE", fmtNum(s.fte)], ["Aushilfen", s.temp], ["Führungskräfte", n.leaders - (n.virtual ? 1 : 0)], ["Ebenen", n.maxDepth - n.depth + (n.virtual ? 0 : 1)]];
+    return mode.key === "fte" ? [f[1], f[0], ...f.slice(2)] : f;
   }
-  function sheet({id, unit, title, sub, legendHtml = "", chart, wide = false}){
-    const date = new Date().toLocaleDateString("de-DE");
+  function legend(mode){
+    const t = $("#temp").value === "hide" ? "" : `<span><span class="tchip"></span>Aushilfe / Werkstudierende / Praktikum</span>`;
+    if(mode.key === "komm") return t ? `<div class="legend">${t}</div>` : "";
+    const b = mode.key === "fte" ? `<span><span class="badge">2,5</span> FTE direkt unterstellt</span><span>„Team“ = alle FTE darunter</span><span>Zahl in der Liste = FTE der Person</span>`
+                                 : `<span><span class="badge">3</span> Köpfe direkt unterstellt</span><span>„Team“ = alle Personen darunter</span>`;
+    return `<div class="legend">${b}<span>Graue Liste = Mitarbeitende ohne Führungsverantwortung</span>${t}</div>`;
+  }
+  function sheet({id, kicker, title, company, factsList = [], legendHtml = "", body = "", build = null, depth = 0, wide = false}){
+    if(build) SHEETS.push({id, build, depth});
+    const st = fmtDate(stichtag());
     return `<section class="sheet${wide ? " wf-sheet" : ""}" id="${id}">
-      <div class="sheet-head"><div><h2><span class="unit">${esc(unit.name)}</span> | ${esc(title)}</h2>
-        <div class="sub"><div>${esc(sub)}</div><div>Stand ${date} · Quelle: ${esc(sourceName)}</div></div></div>${legendHtml}</div>
-      <div class="chart-wrap"><div class="chart">${chart}</div></div>
-      <div class="sheet-foot"><span>${esc(unit.name)} · ${esc(sub)}</span><span>Stand ${date}</span></div>
+      <div class="sheet-head"><div><div class="kicker">${esc(kicker)}</div><h2>${esc(title)}</h2><div class="stand">Stand ${st}</div></div>
+        <div class="right"><div class="company">${esc(company)}</div><div class="facts">${factsList.map(([l, v]) => `<div><b>${v}</b>${esc(l)}</div>`).join("")}</div></div></div>
+      ${legendHtml}
+      <div class="chart-wrap"><div class="chart${build ? " tree" : ""}">${body}</div></div>
+      <div class="sheet-foot"><span>${esc(company)} · ${esc(title)} · ${esc(kicker)}</span><span>Stand ${st}</span></div>
     </section>`;
   }
 
   function render(){
-    const {units, warn} = buildModel(rawRows);
+    const {root, warn, inactive, count} = buildTree();
+    SHEETS = [];
+    const company = $("#ges").value || [...new Set(records.map(r => r.ges).filter(Boolean))].join(" / ") || "";
+    const title = $("#area").value || "Gesamtorganisation";
+    const modes = [["pg-fte", MODES.fte], ["pg-kopf", MODES.kopf], ["pg-komm", MODES.komm]].filter(([id]) => $("#" + id).checked).map(([, m]) => m);
     let html = "", nav = "";
-    units.forEach((u, ui) => {
-      const layout = chooseLayout(u);
-      for(const mode of [MODES.fte, MODES.kopf]){
-        const id = `u${ui}-${mode.key}`;
-        html += sheet({id, unit:u, title:`${mode.fmt(u[mode.key])} ${mode.title}`, sub:`Organigramm · Darstellung in ${mode.unit}`,
-          legendHtml:legend(mode), chart:`<div class="tree">${orgChart(u, layout, mode)}</div>`});
-        nav += `<a href="#${id}">${esc(u.name)} · ${mode.unit}</a>`;
+    if(!count){ html = `<section class="sheet"><div class="empty">Keine Personen in der Auswahl.</div></section>`; }
+    else {
+      for(const m of modes){
+        const id = "o-" + m.key;
+        const lim = +$("#depth").value, d = lim ? Math.min(root.maxDepth, lim - 1) : root.maxDepth;
+        html += sheet({id, kicker:m.kicker, title, company, factsList:facts(root, m), legendHtml:legend(m), depth:d,
+          build: k => `<ul><li>${subtree(root, 0, k, m, root.virtual ? "" : "ceo", lim)}</li></ul>`});
+        nav += `<a href="#${id}">${esc(m.kicker)}</a>`;
       }
-      html += sheet({id:`u${ui}-wf`, unit:u, title:"Aufbau nach Bereichen", sub:"FTE und Köpfe je Bereich (N-1)", chart:waterfall(u), wide:true});
-      nav += `<a href="#u${ui}-wf">${esc(u.name)} · Aufbau</a>`;
-    });
-    if(!units.length) html = `<section class="sheet"><p>Keine Personen gefunden. Erwartet wird eine Kopfzeile mit „Mitarbeitername“ und „Organigramm final“.</p></section>`;
+      if($("#pg-wf").checked){
+        html += sheet({id:"o-wf", kicker:"Analytics · Aufbau", title:`${title} – Aufbau je Bereich`, company, factsList:facts(root, MODES.kopf).slice(0, 3), body:waterfall(root), wide:true});
+        nav += `<a href="#o-wf">Aufbau je Bereich</a>`;
+      }
+      if($("#pg-detail").checked){
+        root.kids.filter(k => k.kids.length).forEach((k, i) => {
+          for(const m of modes.length ? modes : [MODES.komm]){
+            const id = `d${i}-${m.key}`;
+            html += sheet({id, kicker:m.kicker, title:groupName(k), company, factsList:facts(k, m), legendHtml:legend(m), depth:k.maxDepth - k.depth,
+              build: kk => `<ul><li>${subtree(k, 0, kk, m)}</li></ul>`});
+          }
+          nav += `<a href="#d${i}-${(modes[0] || MODES.komm).key}">${esc(groupName(k))}</a>`;
+        });
+      }
+    }
     $("#main").innerHTML = html;
     $("#jump").innerHTML = nav;
-    $("#warnings").innerHTML = warn.length ? `<div class="warnings"><b>Hinweise zur Datei (${warn.length})</b><ul>${warn.slice(0,20).map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : "";
-    applySearch();
+    const notes = [...warn];
+    if(inactive) notes.unshift(`${inactive} Person(en) sind am Stichtag nicht aktiv (Eintritt später oder bereits ausgetreten) und werden nicht gezeigt.`);
+    $("#warnings").innerHTML = notes.length ? `<div class="warnings"><b>Hinweise (${notes.length})</b><ul>${notes.slice(0, 25).map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : "";
+    chooseLayouts();
   }
 
-  /* ---------- Datei laden (nur lokal) ---------- */
+  /* ---------- Layout je Seite: das größte druckbare wählen ---------- */
+  function chooseLayouts(){
+    const [w, h] = printArea();
+    for(const s of SHEETS){
+      const c = document.querySelector(`#${s.id} .chart`);
+      let best = null;
+      for(let k = s.depth + 1; k >= 1; k--){
+        c.innerHTML = s.build(k);
+        const z = Math.min(w / c.scrollWidth, (h - 130) / c.scrollHeight);
+        if(!best || z > best.z * 1.08) best = {k, z};
+      }
+      c.innerHTML = s.build(best.k);
+    }
+    applySearch();
+  }
+  function printArea(){
+    const p = PAPER[$("#format").value];
+    return [(p.w - 2 * MARGIN_MM) * MM, (p.h - 2 * MARGIN_MM) * MM];
+  }
+  function fitForPrint(){
+    const [w, h] = printArea();
+    $("#page-size").textContent = `@page { size: ${$("#format").value} landscape; margin: ${MARGIN_MM}mm; }`;
+    document.documentElement.style.setProperty("--sheet-h", (h - 2) + "px");
+    document.querySelectorAll(".sheet").forEach(s => {
+      const c = s.querySelector(".chart"); if(!c) return;
+      c.style.zoom = 1;
+      const headH = s.querySelector(".sheet-head").offsetHeight + (s.querySelector(".legend")?.offsetHeight || 0) + 60;
+      c.style.zoom = Math.min(s.classList.contains("wf-sheet") ? 1.6 : 1.35, w / c.scrollWidth, (h - headH) / c.scrollHeight).toFixed(3);
+    });
+  }
+
+  /* ---------- Laden ---------- */
+  function setData(rows, name, demo){
+    records = rows; sourceName = name; isDemo = demo;
+    $("#ges").innerHTML = ""; $("#area").innerHTML = "";
+    $("#depth").value = rows.length <= 60 ? "0" : "3";   // kleine Einheiten: alle Ebenen in der Übersicht
+    const s = $("#status");
+    s.textContent = demo ? `${name} (fiktiv)` : `${name} · lokal geladen · ${rows.length} Zeilen`;
+    s.classList.toggle("demo", demo);
+    fillSelects(); render();
+  }
+  function loadDemo(key){
+    const p = parseAoa(window.DEMO_DATA[key]);
+    setData(p.rows, key === "gross" ? "Testdaten groß" : "Testdaten klein", true);
+  }
   function loadFile(file){
     if(!file) return;
     const reader = new FileReader();
     reader.onload = e => {
       try{
-        const wb = XLSX.read(new Uint8Array(e.target.result), {type:"array"});
-        let rows = null;
-        for(const n of wb.SheetNames){
-          rows = rowsFromAoa(XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:"", raw:true}));
-          if(rows) break;
-        }
-        if(!rows){ alert("Keine passende Tabelle gefunden – benötigt werden die Spalten „Mitarbeitername“ und „Organigramm final“."); return; }
-        rawRows = rows; sourceName = file.name;
-        render();
-        const s = $("#status"); s.textContent = `${file.name} · lokal geladen`; s.classList.remove("demo");
+        const wb = XLSX.read(new Uint8Array(e.target.result), {type:"array", cellDates:true});
+        let p = null;
+        for(const n of wb.SheetNames){ p = parseAoa(XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:"", raw:true})); if(p) break; }
+        if(!p){ alert("Keine passende Tabelle gefunden – benötigt werden die Spalten „Personalnummer“ und „Vorgesetzter-Personalnummer“."); return; }
+        setData(p.rows, file.name, false);
+        const miss = p.missing.filter(k => ["last", "first", "hours", "pos"].includes(k));
+        if(miss.length) $("#warnings").insertAdjacentHTML("afterbegin", `<div class="warnings">Folgende Spalten fehlen in der Datei: ${miss.join(", ")}</div>`);
       }catch(err){ alert("Datei konnte nicht gelesen werden: " + err.message); }
     };
     reader.readAsArrayBuffer(file);
   }
   $("#file").addEventListener("change", e => { loadFile(e.target.files[0]); e.target.value = ""; });
+  document.querySelectorAll("[data-demo]").forEach(b => b.addEventListener("click", () => loadDemo(b.dataset.demo)));
   addEventListener("dragover", e => { e.preventDefault(); document.body.classList.add("dragging"); });
   addEventListener("dragleave", e => { if(!e.relatedTarget) document.body.classList.remove("dragging"); });
   addEventListener("drop", e => { e.preventDefault(); document.body.classList.remove("dragging"); loadFile(e.dataTransfer.files[0]); });
-
-  $("#template").addEventListener("click", () => {
-    const wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(demoAoa());
-    ws["!cols"] = [18,18,18,30,36,20,22,14,13,24].map(wch => ({wch}));
-    XLSX.utils.book_append_sheet(wb, ws, "Daten");
-    XLSX.writeFile(wb, "testdaten_organigramm.xlsx");
-  });
 
   /* ---------- Suche ---------- */
   function applySearch(){
@@ -391,27 +603,21 @@
   }
   $("#search").addEventListener("input", applySearch);
 
-  /* ---------- Druck: jede Seite auf das Blatt skalieren ---------- */
-  function fitForPrint(){
-    const [w, h] = printArea();
-    $("#page-size").textContent = `@page { size: ${$("#format").value} landscape; margin: ${MARGIN_MM}mm; }`;
-    document.documentElement.style.setProperty("--sheet-h", (h - 2) + "px");
-    document.querySelectorAll(".sheet").forEach(s => {
-      const c = s.querySelector(".chart"); if(!c) return;
-      c.style.zoom = 1;
-      const headH = s.querySelector(".sheet-head").offsetHeight + 40;
-      c.style.zoom = Math.min(s.classList.contains("wf-sheet") ? 2 : 1.4, w / c.scrollWidth, (h - headH) / c.scrollHeight).toFixed(3);
-    });
-  }
+  /* ---------- Bedienung ---------- */
+  ["#ges", "#stichtag"].forEach(s => $(s).addEventListener("change", () => { fillSelects(); render(); }));
+  ["#area", "#names", "#showpos", "#temp", "#fteh", "#format", "#pg-fte", "#pg-kopf", "#pg-komm", "#pg-wf", "#pg-detail", "#depth"]
+    .forEach(s => $(s).addEventListener("change", render));
   addEventListener("beforeprint", fitForPrint);
   addEventListener("afterprint", () => document.querySelectorAll(".chart").forEach(c => c.style.zoom = ""));
   $("#print").addEventListener("click", () => { fitForPrint(); print(); });
-  $("#format").addEventListener("change", render);
-  $("#subcol").addEventListener("change", render);
+  $("#help").addEventListener("click", () => $("#helpbox").classList.add("open"));
+  $("#helpclose").addEventListener("click", () => $("#helpbox").classList.remove("open"));
+  $("#helpbox").addEventListener("click", e => { if(e.target.id === "helpbox") e.target.classList.remove("open"); });
   window.fitForPrint = fitForPrint;
+  window.loadDemo = loadDemo;
 
-  rawRows = rowsFromAoa(demoAoa()) || [];
-  render();
+  const t = new Date(); $("#stichtag").value = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+  loadDemo("gross");
 })();
 </script>
 <!-- SheetJS xlsx 0.18.5 · (C) SheetJS · Apache License 2.0 (siehe LICENSE-sheetjs.txt) · liest/schreibt Excel lokal im Browser -->
