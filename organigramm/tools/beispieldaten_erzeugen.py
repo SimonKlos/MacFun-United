@@ -3,7 +3,7 @@
 Ausgabe:
   ../testdaten_gross.xlsx   größere Einheit (ca. 140 Personen, bis 5 Ebenen)
   ../testdaten_klein.xlsx   kleinere Einheit (ca. 25 Personen)
-  ../organigramm.html       beide Datensätze werden dort als Demo eingesetzt
+  ../organigramm.html       die kleine Einheit wird dort als Beispiel vorausgefüllt
 
 Alle Namen und Werte sind frei erfunden. Aufruf:  python3 beispieldaten_erzeugen.py
 """
@@ -195,7 +195,8 @@ def cell(v):
     return v.strftime("%Y-%m-%d") if isinstance(v, dt.datetime) else v
 
 
-demo = {k: [HEADER] + [[cell(r[h]) for h in HEADER] for r in rows] for k, (_, rows) in DATASETS.items()}
+# nur die kleine Einheit ist als Beispiel vorausgefüllt
+demo = {"klein": [HEADER] + [[cell(r[h]) for h in HEADER] for r in DATASETS["klein"][1]]}
 html_path = OUT / "organigramm.html"
 html = html_path.read_text(encoding="utf-8")
 start, end = "/*DEMO-DATEN-START*/", "/*DEMO-DATEN-ENDE*/"

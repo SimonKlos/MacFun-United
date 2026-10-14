@@ -32,7 +32,7 @@ Position ein/aus, Aushilfen (hervorheben / zusammenfassen / ausblenden), FTE-Bas
 |---|---|
 | `organigramm.html` | der Simulator, alles in einer Datei |
 | `Anleitung_Organigramm-Simulator.pdf` | Anleitung für die Personalabteilung |
-| `testdaten_gross.xlsx`, `testdaten_klein.xlsx` | fiktive Testdaten im HR-Works-Spaltenaufbau (133 bzw. 25 aktive Personen) |
+| `testdaten_gross.xlsx`, `testdaten_klein.xlsx` | fiktive Testdaten mit exakt den Spalten des HR-Works-Auszugs (133 bzw. 25 aktive Personen); die kleine Einheit ist im Simulator vorausgefüllt |
 | `Beispiel_gross.pdf`, `Beispiel_klein.pdf` | Beispiel-Ausdrucke mit den Testdaten |
 | `tools/beispieldaten_erzeugen.py` | erzeugt die Testdaten neu und setzt sie als Demo in die HTML ein |
 | `tools/anleitung.html` | Quelle der Anleitung |
